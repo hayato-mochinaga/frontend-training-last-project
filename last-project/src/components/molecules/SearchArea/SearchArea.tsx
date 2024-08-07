@@ -18,6 +18,7 @@ interface SearchAreaProps {
     portOptions: PortOption[];
     portLabel: string;
     onPrefectureChange: (prefecture: string) => void;
+    onSearch: (query: string) => void;
 }
 
 interface SearchInput {
@@ -25,7 +26,14 @@ interface SearchInput {
     port: string;
 }
 
-const SearchArea: React.FC<SearchAreaProps> = ({ prefectureOptions, prefectureLabel, portOptions, portLabel, onPrefectureChange }) => {
+const SearchArea: React.FC<SearchAreaProps> = ({
+    prefectureOptions,
+    prefectureLabel,
+    portOptions,
+    portLabel,
+    onPrefectureChange,
+    onSearch
+}) => {
     const { control, handleSubmit } = useForm<SearchInput>();
     const [selectedPrefecture, setSelectedPrefecture] = useState<string | null>(null);
 
@@ -34,62 +42,72 @@ const SearchArea: React.FC<SearchAreaProps> = ({ prefectureOptions, prefectureLa
         onPrefectureChange(value);
     };
 
-    const onSubmit: SubmitHandler<SearchInput> = data => {
-        console.log('Prefecture:', data.prefecture);
-        console.log('Port:', data.port);
+    const onSubmit: SubmitHandler<SearchInput> = async data => {
+        const query = `${data.prefecture}${data.port}`;
+        onSearch(query);
     };
 
     return (
+        <FormArea>
             <form onSubmit={handleSubmit(onSubmit)}>
-        <SearchAreaWrapper>
-                <SearchBoxWrapper>
-                    <Controller
-                        name="prefecture"
-                        control={control}
-                        render={({ field }) => (
-                            <StyledSearchBox
-                                {...field}
-                                options={prefectureOptions}
-                                label={prefectureLabel}
-                                isGroup={true}
-                                onChange={(value: string) => {
-                                    field.onChange(value);
-                                    handlePrefectureChange(value);
-                                }}
-                            />
-                        )}
-                    />
-                    {selectedPrefecture && (
+                <SearchAreaWrapper>
+                    <SearchBoxWrapper>
                         <Controller
-                            name="port"
+                            name="prefecture"
                             control={control}
                             render={({ field }) => (
                                 <StyledSearchBox
                                     {...field}
-                                    options={portOptions}
-                                    label={portLabel}
-                                    isGroup={false}
-                                    onChange={field.onChange}
+                                    options={prefectureOptions}
+                                    label={prefectureLabel}
+                                    isGroup={true}
+                                    onChange={(value: string) => {
+                                        field.onChange(value);
+                                        handlePrefectureChange(value);
+                                    }}
                                 />
                             )}
                         />
-                    )}
-                </SearchBoxWrapper>
-                <StyledSearchButtonWrapper>
-                    <StyledSearchButton color="white" size={35} />
-                </StyledSearchButtonWrapper>
-        </SearchAreaWrapper>
+                        <PortSearchBoxWrapper>
+                            {selectedPrefecture && (
+                                <Controller
+                                    name="port"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <StyledSearchBox
+                                            {...field}
+                                            options={portOptions}
+                                            label={portLabel}
+                                            isGroup={false}
+                                            onChange={field.onChange}
+                                        />
+                                    )}
+                                />
+                            )}
+                        </PortSearchBoxWrapper>
+                    </SearchBoxWrapper>
+                    <StyledSearchButtonWrapper>
+                        <StyledSearchButton color="white" size={39} />
+                    </StyledSearchButtonWrapper>
+                </SearchAreaWrapper>
             </form>
+        </FormArea>
     );
 };
 
+const FormArea = styled('div')({
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    height: '10%',
+});
+
 const SearchAreaWrapper = styled('div')({
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
-    width: '80%',
-    height: '10%',
-    gap: '10px',
+    width: '100%',
+    gap: '80px',
 });
 
 const SearchBoxWrapper = styled('div')({
@@ -101,6 +119,10 @@ const SearchBoxWrapper = styled('div')({
     gap: '100px',
 });
 
+const PortSearchBoxWrapper = styled('div')({
+    width: '270px',
+});
+
 const StyledSearchButtonWrapper = styled('div')({
     display: 'flex',
     justifyContent: 'center',
@@ -109,6 +131,7 @@ const StyledSearchButtonWrapper = styled('div')({
 });
 
 const StyledSearchBox = styled(SearchBox)({
+    width: '270px',
     height: '100%',
 });
 

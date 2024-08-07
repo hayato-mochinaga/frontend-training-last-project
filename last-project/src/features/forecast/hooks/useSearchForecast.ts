@@ -1,22 +1,36 @@
-import { useForm, SubmitHandler } from 'react-hook-form';
-
-interface SearchInput {
-    prefecture: string;
-    port: string;
-}
+import axios from 'axios';
 
 const useSearchForecast = () => {
-    const { control, handleSubmit } = useForm<SearchInput>();
-    const onSubmit: SubmitHandler<SearchInput> = data => {
-        console.log('Prefecture:', data.prefecture);
-        console.log('Port:', data.port);
+    const searchForecast = async (query: string) => {
+        try {
+            const response = await axios.get(
+                '/api/geocode/V1/geoCoder', {
+                    params: {
+                        appid: 'dj00aiZpPWNibUhRUmI4QU5mcSZzPWNvbnN1bWVyc2VjcmV0Jng9YWE-',
+                        query,
+                        output: 'json'
+                    }
+                }
+            );
+
+            if (response.data && response.data.Feature && response.data.Feature.length > 0) {
+                const feature = response.data.Feature[0];
+                return {
+                    Name: feature.Name,
+                    Coordinates: feature.Geometry.Coordinates,
+                    BoundingBox: feature.Geometry.BoundingBox
+                };
+            } else {
+                console.error('No results found');
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching forecast data', error);
+            return null;
+        }
     };
 
-    return {
-        control,
-        handleSubmit,
-        onSubmit,
-    };
+    return searchForecast;
 };
 
 export default useSearchForecast;

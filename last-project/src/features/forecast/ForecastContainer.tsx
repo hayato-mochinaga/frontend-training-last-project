@@ -2,18 +2,29 @@ import React, { useState } from 'react';
 import { Forecast } from '../../components/pages/Forecast';
 import { prefectures } from './constants';
 import usePortList from './hooks/usePortList';
-// import { useForm } from 'react-hook-form';
+import useSearchForecast from './hooks/useSearchForecast';
 
 export const ForecastContainer: React.FC = () => {
     const [selectedPrefecture, setSelectedPrefecture] = useState<string>('');
     const { portList, error } = usePortList(selectedPrefecture);
     const [showPortBox, setShowPortBox] = useState<boolean>(false);
+    const [forecastData, setForecastData] = useState<{
+        Name: string;
+        Coordinates: string;
+        BoundingBox: string;
+    } | null>(null);
+    const searchForecast = useSearchForecast();
 
     const portOptions = portList.map(port => ({
         label: port.portName
     }));
 
-
+    const handleSearch = async (query: string) => {
+        const result = await searchForecast(query);
+        if (result) {
+            setForecastData(result);
+        }
+    };
 
     return (
         <>
@@ -30,6 +41,8 @@ export const ForecastContainer: React.FC = () => {
                         setShowPortBox(!!prefecture);
                     }}
                     showPortBox={showPortBox}
+                    onSearch={handleSearch}
+                    forecastData={forecastData}
                 />
             )}
         </>

@@ -34,7 +34,7 @@ const StyledButton = styled('button')({
         height: '200%',
         borderRadius: '50%',
         background: 'rgba(255, 255, 255, 0.3)',
-        animation: 'ripple 0.8s linear infinite',
+        animation: 'ripple 0.78s linear infinite',
     },
     '@keyframes ripple': {
         from: {

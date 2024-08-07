@@ -141,3 +141,4 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
 };
 
 export default SearchBox;
+
