@@ -2,22 +2,24 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface WeatherYahooProps {
-    forecastData: {
+    locationData: {
         Name: string;
-        Coordinates: string;
+        Latitude: string;
+        Longitude: string;
         BoundingBox: string;
     } | null;
 }
 
-export const WeatherYahoo: React.FC<WeatherYahooProps> = ({ forecastData }) => {
+export const WeatherYahoo: React.FC<WeatherYahooProps> = ({ locationData }) => {
     return (
         <WeatherYahooWrapper>
             <h1>WeatherYahoo</h1>
-            {forecastData ? (
+            {locationData ? (
                 <>
-                    <p>地名: {forecastData.Name}</p>
-                    <p>経度緯度: {forecastData.Coordinates}</p>
-                    <p>BoundingBox: {forecastData.BoundingBox}</p>
+                    <p>地名: {locationData.Name}</p>
+                    <p>緯度: {locationData.Latitude}</p>
+                    <p>経度: {locationData.Longitude}</p>
+                    <p>BoundingBox: {locationData.BoundingBox}</p>
                 </>
             ) : (
                 <p>データがありません</p>
@@ -28,4 +30,6 @@ export const WeatherYahoo: React.FC<WeatherYahooProps> = ({ forecastData }) => {
 
 const WeatherYahooWrapper = styled.div`
     color: white;
+    border: 1px solid white;
+    border-radius: 5px;
 `;

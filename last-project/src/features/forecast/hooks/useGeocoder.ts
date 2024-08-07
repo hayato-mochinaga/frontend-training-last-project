@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const useSearchForecast = () => {
-    const searchForecast = async (query: string) => {
+const useGeocoder = () => {
+    const geocode = async (query: string) => {
         try {
             const response = await axios.get(
                 '/api/geocode/V1/geoCoder', {
@@ -15,9 +15,12 @@ const useSearchForecast = () => {
 
             if (response.data && response.data.Feature && response.data.Feature.length > 0) {
                 const feature = response.data.Feature[0];
+                const [longitude, latitude] = feature.Geometry.Coordinates.split(',');
+
                 return {
                     Name: feature.Name,
-                    Coordinates: feature.Geometry.Coordinates,
+                    Latitude: latitude,
+                    Longitude: longitude,
                     BoundingBox: feature.Geometry.BoundingBox
                 };
             } else {
@@ -25,12 +28,12 @@ const useSearchForecast = () => {
                 return null;
             }
         } catch (error) {
-            console.error('Error fetching forecast data', error);
+            console.error('Error fetching geocode data', error);
             return null;
         }
     };
 
-    return searchForecast;
+    return geocode;
 };
 
-export default useSearchForecast;
+export default useGeocoder;

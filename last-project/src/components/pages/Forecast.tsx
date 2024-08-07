@@ -11,7 +11,7 @@ interface ForecastProps {
     onPrefectureChange: (prefecture: string) => void;
     showPortBox: boolean;
     onSearch: (query: string) => void;
-    forecastData: { Name: string; Coordinates: string; BoundingBox: string } | null;
+    locationData: { Name: string; Latitude: string; Longitude: string; BoundingBox: string } | null;
 }
 
 export const Forecast: React.FC<ForecastProps> = ({
@@ -22,7 +22,7 @@ export const Forecast: React.FC<ForecastProps> = ({
     onPrefectureChange,
     showPortBox,
     onSearch,
-    forecastData
+    locationData
 }) => {
     return (
         <ForecastWrapper>
@@ -35,7 +35,7 @@ export const Forecast: React.FC<ForecastProps> = ({
                 showPortBox={showPortBox}
                 onSearch={onSearch}
             />
-            <WeatherYahoo forecastData={forecastData} />
+            <WeatherYahoo locationData={locationData} />
         </ForecastWrapper>
     );
 };

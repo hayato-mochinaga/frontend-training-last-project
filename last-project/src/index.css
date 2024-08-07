@@ -12,7 +12,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-#root{
+
+#root {
   width: 100%;
 }
 
@@ -31,10 +32,22 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-background-image: url("public/static/media/background.png");
-background-size: cover; /* 画像がコンテナ内に収まるように縮小 */
-background-repeat: no-repeat;
+  background-image: url("public/static/media/background.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  animation: backgroundFade 6.2s infinite alternate;
+}
 
+@keyframes backgroundFade {
+  0% {
+    filter: brightness(1.2);
+  }
+  50% {
+    filter: brightness(0.84);
+  }
+  100% {
+    filter: brightness(1);
+  }
 }
 
 h1 {

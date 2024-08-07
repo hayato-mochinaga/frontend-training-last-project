@@ -30,7 +30,13 @@ const usePortList = (location: string): UsePortListResult => {
             },
           }
         );
-        const ports = response.data.features.map((feature: any) => ({
+        interface Feature {
+          attributes: {
+            漁港名: string;
+          };
+        }
+        
+        const ports = response.data.features.map((feature: Feature) => ({
           portName: feature.attributes.漁港名,
         }));
         setPortList(ports);
