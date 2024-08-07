@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import SearchArea from '../molecules/SearchArea/SearchArea';
 import { WeatherYahoo } from '../organisms/WeatherYahoo/WeatherYahoo';
 
@@ -35,13 +35,24 @@ export const Forecast: React.FC<ForecastProps> = ({
                 showPortBox={showPortBox}
                 onSearch={onSearch}
             />
-            <WeatherYahoo locationData={locationData} />
+            <MainForecastArea>
+                <WeatherYahoo locationData={locationData} />
+            </MainForecastArea>
         </ForecastWrapper>
     );
 };
 
-const ForecastWrapper = styled('div')({
-    justifyContent: 'center',
-    width: '95%',
-    height: '93vh',
-});
+const ForecastWrapper = styled.div`
+    justify-content: center;
+    width: 95%;
+    height: 93vh;
+`;
+
+const MainForecastArea = styled.div`
+    overflow-y: auto;
+    max-height: 70vh; /* 高さはお好みで調整してください */
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(33, 14, 14, 0.3); /* 背景色をお好みで設定してください */
+    border-radius: 10px;
+`;

@@ -35,7 +35,7 @@ body {
   background-image: url("public/static/media/background.png");
   background-size: cover;
   background-repeat: no-repeat;
-  animation: backgroundFade 6.2s infinite alternate;
+  animation: backgroundFade 6.6s infinite alternate;
 }
 
 @keyframes backgroundFade {
@@ -43,10 +43,10 @@ body {
     filter: brightness(1.2);
   }
   50% {
-    filter: brightness(0.84);
+    filter: brightness(0.92);
   }
   100% {
-    filter: brightness(1);
+    filter: brightness(1.06);
   }
 }
 
