@@ -1,15 +1,14 @@
-import './App.css'
-import Weather from './components/Weather'
-import Geocode from './components/Geocode'
+// src/App.tsx
+import React from 'react';
+import AppRoutes from './routes';
+
 
 function App() {
-
   return (
     <>
-      <Weather></Weather>
-      <Geocode></Geocode>
+      <AppRoutes />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

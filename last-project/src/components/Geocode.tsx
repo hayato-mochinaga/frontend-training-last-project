@@ -1,57 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const GeoLocations: React.FC = () => {
-    const [locations, setLocations] = useState<any[]>([]);
+const usePortList = () => {
+    const [portList, setPortList] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchLocations = async () => {
+        const fetchPortNames = async () => {
             try {
-                const response = await axios.get('/api/geocode/V1/geoCoder', {
-                    params: {
-                        appid: 'dj00aiZpPWNibUhRUmI4QU5mcSZzPWNvbnN1bWVyc2VjcmV0Jng9YWE-', // ここにあなたのYahoo APIアプリケーションIDを入力
-                        query: '東京都港区六本木',
-                        output: 'json',
-                    },
-                });
-                console.log(response.data);
-                setLocations(response.data.Feature);
+                const response = await axios.get(
+                    'https://api.msil.go.jp/fishing-port-point/v2/MapServer/1/query',
+                    {
+                        headers: {
+                            'Ocp-Apim-Subscription-Key': '0e83ad5d93214e04abf37c970c32b641',
+                        },
+                        params: {
+                            f: 'json',
+                            where: "所在地 LIKE '千葉県%'",
+                            returnGeometry: true,
+                        },
+                    }
+                );
+                const ports = response.data.features.map((feature: any) => feature.attributes.漁港名);
+                setPortList(ports);
             } catch (error) {
-                console.error('Error fetching location data', error);
+                console.error('Error fetching port data', error);
                 if (axios.isAxiosError(error)) {
                     console.error('Response data:', error.response?.data);
                 }
-                setError('位置情報の取得に失敗しました');
+                setError('漁港名の取得に失敗しました');
             }
         };
 
-        fetchLocations();
+        fetchPortNames();
     }, []);
 
-    return (
-        <div>
-            <h1>六本木の位置情報</h1>
-            {error ? (
-                <p>{error}</p>
-            ) : locations.length > 0 ? (
-                <div>
-                    <ul>
-                        {locations.map((location, index) => (
-                            <li key={index}>
-                                <p>名前: {location.Name}</p>
-                                <p>住所: {location.Property.Address}</p>
-                                <p>座標: {location.Geometry.Coordinates}</p>
-                                <p>バウンディングボックス: {location.Geometry.BoundingBox}</p>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            ) : (
-                <p>読み込み中...</p>
-            )}
-        </div>
-    );
+    return { portList, error };
 };
 
-export default GeoLocations;
+export default usePortList;
