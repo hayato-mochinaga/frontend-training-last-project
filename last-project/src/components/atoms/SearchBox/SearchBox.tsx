@@ -7,8 +7,8 @@ import { useForm, Controller } from 'react-hook-form';
 
 interface PrefectureOptionType {
     label: string;
-    firstLetter: string;
     furigana: string;
+    prefectureCode: string;
 }
 
 interface SearchBoxProps {
@@ -82,11 +82,11 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
 
     const sortedOptions = options.sort((a, b) => {
         if (isGroup) {
-            const aChar = normalizeCharacter(a.firstLetter);
-            const bChar = normalizeCharacter(b.firstLetter);
+            const aChar = normalizeCharacter(a.furigana.charAt(0));
+            const bChar = normalizeCharacter(b.furigana.charAt(0));
             const aIndex = aiueoOrder.indexOf(aChar);
             const bIndex = aiueoOrder.indexOf(bChar);
-            return aIndex - bIndex || a.firstLetter.localeCompare(b.firstLetter, 'ja-JP');
+            return aIndex - bIndex || a.furigana.localeCompare(b.furigana, 'ja-JP');
         } else {
             return a.label.localeCompare(b.label, 'ja-JP');
         }
@@ -100,7 +100,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
                 <StyledAutocomplete
                     disablePortal
                     options={sortedOptions}
-                    groupBy={isGroup ? (option) => normalizeCharacter(option.firstLetter) : undefined}
+                    groupBy={isGroup ? (option) => normalizeCharacter(option.furigana.charAt(0)) : undefined}
                     getOptionLabel={(option) => option.label}
                     filterOptions={(options, state) =>
                         options.filter(option =>
@@ -141,4 +141,3 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
 };
 
 export default SearchBox;
-

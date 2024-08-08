@@ -4,7 +4,7 @@ import SearchArea from '../molecules/SearchArea/SearchArea';
 import { WeatherYahoo } from '../organisms/WeatherYahoo/WeatherYahoo';
 
 interface ForecastProps {
-    prefectureOptions: { label: string; firstLetter: string; furigana: string; }[];
+    prefectureOptions: { label: string; furigana: string; prefectureCode: string; }[];
     prefectureLabel: string;
     portOptions: { label: string; }[];
     portLabel: string;
@@ -36,23 +36,40 @@ export const Forecast: React.FC<ForecastProps> = ({
                 onSearch={onSearch}
             />
             <MainForecastArea>
-                <WeatherYahoo locationData={locationData} />
+                <RainFallOneHourWidget>
+                    <WeatherYahoo locationData={locationData} />
+                </RainFallOneHourWidget>
             </MainForecastArea>
         </ForecastWrapper>
     );
 };
 
 const ForecastWrapper = styled.div`
-    justify-content: center;
     width: 95%;
     height: 93vh;
 `;
 
 const MainForecastArea = styled.div`
     overflow-y: auto;
-    max-height: 70vh; /* 高さはお好みで調整してください */
+    width: 95%;
+    height: 100%;
+    max-height: 79vh;
     margin-top: 20px;
     padding: 20px;
-    background-color: rgba(33, 14, 14, 0.3); /* 背景色をお好みで設定してください */
+    background-color: rgba(33, 14, 14, 0.3);
     border-radius: 10px;
+    display: flex;
+    flex: 1;
+    border: 1px solid white;
 `;
+
+const RainFallOneHourWidget = styled.div`
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    background-color: #20689225;
+    border-radius: 10px;
+    border: 1px solid white;
+`;
+
+export default Forecast;

@@ -5,7 +5,6 @@ interface WeatherData {
     Name: string;
     WeatherList: Array<{
         Date: string;
-        Type: string;
         Rainfall: number;
     }>;
 }

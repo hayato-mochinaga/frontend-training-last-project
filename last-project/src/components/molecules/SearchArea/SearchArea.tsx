@@ -6,8 +6,8 @@ import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
 interface PrefectureOption {
     label: string;
-    firstLetter: string;
     furigana: string;
+    prefectureCode: string;
 }
 
 interface PortOption extends PrefectureOption { }
