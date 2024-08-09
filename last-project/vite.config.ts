@@ -15,6 +15,11 @@ export default defineConfig({
         changeOrigin: true, // Yahoo!のAPIはCORS対応していないので、このオプションをtrueにする
         rewrite: (path) => path.replace(/^\/api/, ''), // リクエストのパスから/apiを削除
       },
+      '/tide': { // 新しく追加するエントリーポイント
+        target: 'https://api.tide736.net',
+        changeOrigin: true, // このオプションをtrueにすることで、CORSの問題を回避
+        rewrite: (path) => path.replace(/^\/tide/, 'get_tide.php'), // リクエストのパスから/tideを削除
+      },
     },
   },
 });

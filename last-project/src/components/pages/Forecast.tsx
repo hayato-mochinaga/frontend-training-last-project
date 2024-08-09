@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import SearchArea from '../molecules/SearchArea/SearchArea';
 import { WeatherYahoo } from '../organisms/WeatherYahoo/WeatherYahoo';
+import TideInfo from '../organisms/TideInfo/TideInfo';
 
 interface ForecastProps {
     prefectureOptions: { label: string; furigana: string; prefectureCode: string; }[];
@@ -12,6 +13,7 @@ interface ForecastProps {
     showPortBox: boolean;
     onSearch: (query: string) => void;
     locationData: { Name: string; Latitude: string; Longitude: string; BoundingBox: string } | null;
+    tideInfo: string; // 追加
 }
 
 export const Forecast: React.FC<ForecastProps> = ({
@@ -22,7 +24,8 @@ export const Forecast: React.FC<ForecastProps> = ({
     onPrefectureChange,
     showPortBox,
     onSearch,
-    locationData
+    locationData,
+    tideInfo // 追加
 }) => {
     return (
         <ForecastWrapper>
@@ -39,6 +42,9 @@ export const Forecast: React.FC<ForecastProps> = ({
                 <RainFallOneHourWidget>
                     <WeatherYahoo locationData={locationData} />
                 </RainFallOneHourWidget>
+                <TideInfoArea> {/* 追加 */}
+                    <TideInfo tideInfo={tideInfo} />
+                </TideInfoArea>
             </MainForecastArea>
         </ForecastWrapper>
     );
@@ -58,8 +64,6 @@ const MainForecastArea = styled.div`
     padding: 20px;
     background-color: rgba(33, 14, 14, 0.3);
     border-radius: 10px;
-    display: flex;
-    flex: 1;
     border: 1px solid white;
 `;
 
@@ -68,6 +72,15 @@ const RainFallOneHourWidget = styled.div`
     width: 100%;
     height: 100%;
     background-color: #20689225;
+    border-radius: 10px;
+    border: 1px solid white;
+`;
+
+const TideInfoArea = styled.div` /* 追加 */
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    background-color: #ffefc1;
     border-radius: 10px;
     border: 1px solid white;
 `;
