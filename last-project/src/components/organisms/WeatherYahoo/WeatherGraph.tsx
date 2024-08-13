@@ -23,8 +23,8 @@ const WeatherGraph: React.FC<WeatherGraphProps> = ({ data }) => {
                     </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="time" tickMargin={10} />
-                <YAxis tickMargin={10} />
+                <XAxis dataKey="time" tickMargin={10} stroke="#ffffff" />
+                <YAxis tickMargin={10} stroke="#ffffff" />
                 <Tooltip
                     content={({ payload, label }) => {
                         if (payload && payload.length) {
