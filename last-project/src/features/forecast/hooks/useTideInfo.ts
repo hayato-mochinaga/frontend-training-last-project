@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ports } from '../constants';
+import { ports, prefectures } from '../constants';
 
 interface TideData {
     time: string;
@@ -31,24 +31,20 @@ interface TideInfoResult {
 const useTideInfo = async (query: string): Promise<TideInfoResult | string> => {
     console.log('useTideInfoに送られたquery:', query);
 
-    // queryから都道府県名を除去する
-    const portName = query.replace(/(北海道|青森県|岩手県|宮城県|秋田県|山形県|福島県|茨城県|栃木県|群馬県|埼玉県|千葉県|東京都|神奈川県|新潟県|富山県|石川県|福井県|山梨県|長野県|岐阜県|静岡県|愛知県|三重県|滋賀県|京都府|大阪府|兵庫県|奈良県|和歌山県|鳥取県|島根県|岡山県|広島県|山口県|徳島県|香川県|愛媛県|高知県|福岡県|佐賀県|長崎県|熊本県|大分県|宮崎県|鹿児島県|沖縄県)/, '').trim();
-
-    // portsの中でportNameが完全一致するものを探す
+    // 都道府県名を除去
+    const prefecture = prefectures.find(pref => query.includes(pref.label));
+    const portName = prefecture ? query.replace(prefecture.label, '').trim() : query;
     const port = ports.find(port => portName === port.portName);
 
     if (port) {
         const pc = port.prefectureCode;
         const hc = port.portCode;
-        console.log('pc:', pc, 'hc:', hc);
 
-        // 現在の年月日を取得
         const now = new Date();
         const yr = now.getFullYear();
-        const mn = now.getMonth() + 1; // 月は0から始まるので+1
+        const mn = now.getMonth() + 1;
         const dy = now.getDate();
 
-        // APIリクエストを行い、潮汐情報を取得する
         try {
             const response = await axios.get('/tide', {
                 params: {
@@ -61,19 +57,36 @@ const useTideInfo = async (query: string): Promise<TideInfoResult | string> => {
                 }
             });
 
-            // 必要なデータのみを抽出して返す
-            const tideData = response.data.tide.chart["2024-08-09"]; // 日付はハードコードされた例。動的に処理する場合は適宜修正
+            const today = `${yr}-${mn.toString().padStart(2, '0')}-${dy.toString().padStart(2, '0')}`;
+            const tideData = response.data.tide.chart[today];
+
+            if (!tideData) {
+                console.error('潮汐情報が見つかりませんでした:', today);
+                return '潮汐情報が見つかりませんでした。';
+            }
+
+            const sun = tideData.sun;
+            const moon = tideData.moon;
+            const edd = tideData.edd || [];
+            const flood = tideData.flood || [];
+            const tide = tideData.tide || [];
+
             return {
-                sun: tideData.sun,
-                moon: tideData.moon,
-                edd: tideData.edd,
-                flood: tideData.flood,
-                tide: tideData.tide
+                sun,
+                moon,
+                edd,
+                flood,
+                tide,
             };
         } catch (error) {
             console.error('潮汐情報の取得に失敗しました:', error);
             return '潮汐情報の取得に失敗しました。';
         }
+    } else if (prefecture) {
+        const relevantPorts = ports.filter(port => port.prefectureCode === prefecture.prefectureCode).map(port => port.portName);
+        if (relevantPorts.length > 0) {
+            return `「${query}」に、該当する港は"潮汐グラフ機能"に対応しておりません。\n「${prefecture.label}」の"潮汐グラフ機能"に対応している港は以下の通りです:\n${relevantPorts.join(', ')}`;
+        } 
     } else {
         return `「${query}」に、該当する港は"潮汐グラフ機能"に対応しておりません。`;
     }

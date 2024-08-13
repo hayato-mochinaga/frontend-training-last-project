@@ -80,7 +80,7 @@ const TideInfoArea = styled.div` /* 追加 */
     overflow-y: auto;
     width: 100%;
     height: 100%;
-    background-color: #ffefc1;
+    /* background-color: #ffefc1; */
     border-radius: 10px;
     border: 1px solid white;
 `;

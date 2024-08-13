@@ -1,9 +1,16 @@
 import React from 'react';
+import styled from 'styled-components';
 import TideGraph from './TideGraph';
 
 interface TideInfoProps {
     tideInfo: {
-        sun: any;
+        sun: {
+            rise: string;
+            set: string;
+            astro_twilight: string[];
+            regular_twilight: string[];
+            midline: string;
+        };
         moon: any;
         edd: any[];
         flood: any[];
@@ -13,13 +20,13 @@ interface TideInfoProps {
 
 const TideInfo: React.FC<TideInfoProps> = ({ tideInfo }) => {
     if (typeof tideInfo === 'string') {
-        return <div>{tideInfo}</div>;
+        return <TideInfoWrapper>{tideInfo}</TideInfoWrapper>;
     }
 
     return (
-        <div>
+        <TideInfoWrapper>
             <h2>Tide Information</h2>
-                <TideGraph data={tideInfo.tide} />
+            <TideGraph data={tideInfo.tide} sun={tideInfo.sun} />
             <h3>日出・日没の情報</h3>
             <p>天文薄明: {tideInfo.sun.astro_twilight.join(' - ')}</p>
             <p>市民薄明: {tideInfo.sun.regular_twilight.join(' - ')}</p>
@@ -41,9 +48,12 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo }) => {
                     <li key={index}>時間: {tide.time} - 高さ: {tide.cm}cm</li>
                 ))}
             </ul>
-
-        </div>
+        </TideInfoWrapper>
     );
 };
+
+const TideInfoWrapper = styled.div`
+    color: white;
+`;
 
 export default TideInfo;
