@@ -33,8 +33,8 @@ const useTideInfo = async (query: string): Promise<TideInfoResult | string> => {
 
     // 都道府県名を除去
     const prefecture = prefectures.find(pref => query.includes(pref.label));
-    const portName = prefecture ? query.replace(prefecture.label, '').trim() : query;
-    const port = ports.find(port => portName === port.portName);
+    const portName = prefecture ? query.replace(prefecture.label, '').trim() : '';
+    const port = ports.find(port => portName && portName === port.portName);
 
     if (port) {
         const pc = port.prefectureCode;
@@ -85,11 +85,14 @@ const useTideInfo = async (query: string): Promise<TideInfoResult | string> => {
     } else if (prefecture) {
         const relevantPorts = ports.filter(port => port.prefectureCode === prefecture.prefectureCode).map(port => port.portName);
         if (relevantPorts.length > 0) {
-            return `「${query}」に、該当する港は"潮汐グラフ機能"に対応しておりません。\n「${prefecture.label}」の"潮汐グラフ機能"に対応している港は以下の通りです:\n${relevantPorts.join(', ')}`;
+            const result = `「${query.replace('undefined', '')}」に、該当する港は"潮汐グラフ機能"に対応しておりません。\n「${prefecture.label}」の"潮汐グラフ機能"に対応している港は以下の通りです:\n${relevantPorts.join('\n')}`;
+            console.log(result);  // 改行コードが正しく含まれているか確認するためにコンソールに出力
+            return result;
         } 
     } else {
-        return `「${query}」に、該当する港は"潮汐グラフ機能"に対応しておりません。`;
+        return `「${query.replace('undefined', '')}」に、該当する港は"潮汐グラフ機能"に対応しておりません。`;
     }
 };
+
 
 export default useTideInfo;

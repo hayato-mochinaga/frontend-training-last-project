@@ -22,6 +22,8 @@ export const WeatherYahoo: React.FC<WeatherYahooProps> = ({ locationData }) => {
         rainfall: item.Rainfall
     })) ?? [];
 
+    console.log('locationData', locationData);
+    
     return (
         <WeatherYahooWrapper>
             <h1>１時間降雨量WeatherYahooWidget</h1>
