@@ -94,5 +94,4 @@ const useTideInfo = async (query: string): Promise<TideInfoResult | string> => {
     }
 };
 
-
 export default useTideInfo;

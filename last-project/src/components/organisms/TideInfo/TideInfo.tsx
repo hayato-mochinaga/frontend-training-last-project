@@ -24,6 +24,9 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo }) => {
         return (
             <TideInfoWrapper>
                 <h2>Tide Information</h2>
+                {typeof tideInfo === 'string' && (
+                    <p>{tideInfo}</p>
+                )}
             </TideInfoWrapper>
         );
     }
