@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import SearchArea from '../molecules/SearchArea/SearchArea';
 import { WeatherYahoo } from '../organisms/WeatherYahoo/WeatherYahoo';
 import TideInfo from '../organisms/TideInfo/TideInfo';
+import { WindAndTemp } from '../organisms/WindAndTemp/WindAndTemp'; // 追加
 
 interface ForecastProps {
     prefectureOptions: { label: string; furigana: string; prefectureCode: string; }[];
@@ -39,10 +40,13 @@ export const Forecast: React.FC<ForecastProps> = ({
                 onSearch={onSearch}
             />
             <MainForecastArea>
+                <WindAndTempArea>
+                    <WindAndTemp locationData={locationData} /> 
+                </WindAndTempArea>
                 <RainFallOneHourWidget>
                     <WeatherYahoo locationData={locationData} />
                 </RainFallOneHourWidget>
-                <TideInfoArea> {/* 追加 */}
+                <TideInfoArea>
                     <TideInfo tideInfo={tideInfo} />
                 </TideInfoArea>
             </MainForecastArea>
@@ -76,13 +80,19 @@ const RainFallOneHourWidget = styled.div`
     border: 1px solid white;
 `;
 
-const TideInfoArea = styled.div` /* 追加 */
+const TideInfoArea = styled.div`
     overflow-y: auto;
     width: 100%;
     height: 100%;
-    /* background-color: #ffefc1; */
     border-radius: 10px;
     border: 1px solid white;
 `;
 
-export default Forecast;
+const WindAndTempArea = styled.div` /* 追加 */
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border: 1px solid white;
+`;
+

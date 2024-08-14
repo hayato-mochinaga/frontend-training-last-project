@@ -19,8 +19,13 @@ interface TideInfoProps {
 }
 
 const TideInfo: React.FC<TideInfoProps> = ({ tideInfo }) => {
-    if (typeof tideInfo === 'string') {
-        return <TideInfoWrapper>{tideInfo}</TideInfoWrapper>;
+    // 初期状態または`tideInfo`が空の時に「Tide Information」を表示
+    if (typeof tideInfo === 'string' || !tideInfo) {
+        return (
+            <TideInfoWrapper>
+                <h2>Tide Information</h2>
+            </TideInfoWrapper>
+        );
     }
 
     return (
