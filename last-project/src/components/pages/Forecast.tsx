@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import SearchArea from '../molecules/SearchArea/SearchArea';
 import { WeatherYahoo } from '../organisms/WeatherYahoo/WeatherYahoo';
 import TideInfo from '../organisms/TideInfo/TideInfo';
-import { WindAndTemp } from '../organisms/WindAndTemp/WindAndTemp'; // 追加
+import { WindAndTemp } from '../organisms/WindAndTemp/WindAndTemp';
+import LocationInfo from '../organisms/LocationInfo/LocationInfo'; // 追加
 
 interface ForecastProps {
     prefectureOptions: { label: string; furigana: string; prefectureCode: string; }[];
@@ -14,7 +15,7 @@ interface ForecastProps {
     showPortBox: boolean;
     onSearch: (query: string) => void;
     locationData: { Name: string; Latitude: string; Longitude: string; BoundingBox: string } | null;
-    tideInfo: string; // 追加
+    tideInfo: string;
 }
 
 export const Forecast: React.FC<ForecastProps> = ({
@@ -26,7 +27,7 @@ export const Forecast: React.FC<ForecastProps> = ({
     showPortBox,
     onSearch,
     locationData,
-    tideInfo // 追加
+    tideInfo
 }) => {
     return (
         <ForecastWrapper>
@@ -40,15 +41,20 @@ export const Forecast: React.FC<ForecastProps> = ({
                 onSearch={onSearch}
             />
             <MainForecastArea>
-                <WindAndTempArea>
-                    <WindAndTemp locationData={locationData} /> 
-                </WindAndTempArea>
-                <RainFallOneHourWidget>
-                    <WeatherYahoo locationData={locationData} />
-                </RainFallOneHourWidget>
-                <TideInfoArea>
-                    <TideInfo tideInfo={tideInfo} />
-                </TideInfoArea>
+                <GridContainer>
+                    <LocationInfoArea>
+                        <LocationInfo locationData={locationData} />
+                    </LocationInfoArea>
+                    <TideInfoArea>
+                        <TideInfo tideInfo={tideInfo} />
+                    </TideInfoArea>
+                    <RainFallOneHourWidget>
+                        <WeatherYahoo locationData={locationData} />
+                    </RainFallOneHourWidget>
+                    <WindAndTempArea>
+                        <WindAndTemp locationData={locationData} />
+                    </WindAndTempArea>
+                </GridContainer>
             </MainForecastArea>
         </ForecastWrapper>
     );
@@ -71,28 +77,44 @@ const MainForecastArea = styled.div`
     border: 1px solid white;
 `;
 
-const RainFallOneHourWidget = styled.div`
-    overflow-y: auto;
-    width: 100%;
+const GridContainer = styled.div`
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    grid-template-rows: 2fr 3fr 6fr;
+    gap: 12.5px;
     height: 100%;
-    background-color: #20689225;
+`;
+
+const LocationInfoArea = styled.div`
+    /* border: 1px solid white; */
     border-radius: 10px;
-    border: 1px solid white;
+    grid-column: 1 / span 1; /* 横幅2/5 */
+    grid-row: 1 / span 1; /* 縦幅2/11 */
 `;
 
 const TideInfoArea = styled.div`
-    overflow-y: auto;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
     border: 1px solid white;
+    border-radius: 10px;
+    padding: 10px;
+    grid-column: 2 / span 1; /* 横幅3/5 */
+    grid-row: 1 / span 2; /* 縦幅5/11 */
 `;
 
-const WindAndTempArea = styled.div` /* 追加 */
-    overflow-y: auto;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
+const RainFallOneHourWidget = styled.div`
     border: 1px solid white;
+    border-radius: 10px;
+    padding: 10px;
+    grid-column: 1 / span 1; /* 横幅2/5 */
+    grid-row: 2 / span 1; /* 縦幅3/11 */
 `;
 
+const WindAndTempArea = styled.div`
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 10px;
+    grid-column: 1 / span 2; /* 横幅5/5 */
+    grid-row: 3 / span 2; /* 縦幅6/11 */
+    min-height: 480px;
+`;
+
+export default Forecast;

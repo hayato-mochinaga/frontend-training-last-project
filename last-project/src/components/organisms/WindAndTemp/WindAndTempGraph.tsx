@@ -7,6 +7,7 @@ import FlareIcon from '@mui/icons-material/Flare';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import CloudIcon from '@mui/icons-material/Cloud';
 import UmbrellaIcon from '@mui/icons-material/Umbrella';
+import { getWindSpeedDescription } from '../../../utils/getWindSpeedDescription';
 
 interface WindAndTempGraphProps {
     data: {
@@ -67,19 +68,6 @@ const getWindSpeedColor = (windSpeed: number) => {
     return "#000080"; // 猛烈な風（ネイビー）
 };
 
-const getWindSpeedDescription = (windSpeed: number) => {
-    if (windSpeed <= 0.2) return "平穏 ";
-    if (windSpeed <= 1.5) return "至軽風";
-    if (windSpeed <= 3.3) return "軽風";
-    if (windSpeed <= 5.4) return "軟風";
-    if (windSpeed <= 7.9) return "和風";
-    if (windSpeed <= 10.7) return "疾風";
-    if (windSpeed <= 13.8) return "雄風";
-    if (windSpeed <= 17.1) return "強風";
-    if (windSpeed <= 20.7) return "疾強風";
-    if (windSpeed <= 24.4) return "大強風";
-    return "猛烈な風";
-};
 
 const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
     const averageTemperature = data.temperature.reduce((sum, temp) => sum + temp, 0) / data.temperature.length;
@@ -104,8 +92,8 @@ const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
     };
 
     return (
-        <div>
-            <h2>Wind and Temperature Graph Components</h2>
+        <>
+            {/* <h2>Wind and Temperature Graph Components</h2> */}
             <ResponsiveContainer width="100%" height={300}>
                 <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -145,7 +133,7 @@ const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
                                                 }}
                                             />
                                             <span style={{ fontSize: '1rem', fontWeight: 'bold' }}>{`${windSpeed} m/s`}</span>
-                                            <span style={{ fontSize: '0.9rem', fontWeight: '500', marginTop: '0.2rem' }}>{windSpeedDescription}</span> {/* 風速の強さをテキスト表示 */}
+                                            <span style={{ fontSize: '0.9rem', fontWeight: '500' }}>{windSpeedDescription}</span> {/* 風速の強さをテキスト表示 */}
                                         </div>
                                         <p className="label" style={{ margin: '0' }}>雲量: <span style={{ fontSize: '1.2em', fontWeight: 'bold' }}>{`${cloudCover}%`}</span></p>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.5rem' }}>
@@ -176,7 +164,7 @@ const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
                     />
                 </ComposedChart>
             </ResponsiveContainer>
-            <h2>openmeteo API responseData</h2>
+            {/* <h2>openmeteo API responseData</h2>
             <ul>
                 {data.time.map((time, index) => (
                     <li key={index}>
@@ -188,8 +176,8 @@ const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
                         <p>降水量: {data.rain[index]}mm</p>
                     </li>
                 ))}
-            </ul>
-        </div>
+            </ul> */}
+        </>
     );
 };
 

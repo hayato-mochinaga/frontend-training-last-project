@@ -26,18 +26,18 @@ export const WeatherYahoo: React.FC<WeatherYahooProps> = ({ locationData }) => {
     
     return (
         <WeatherYahooWrapper>
-            <h1>１時間降雨量WeatherYahooWidget</h1>
+            <h2>1時間後までの精密降雨量予報</h2>
             {locationData ? (
                 <>
                     <p>地名: {locationData.Name}</p>
-                    <p>緯度: {locationData.Latitude}</p>
+                    {/* <p>緯度: {locationData.Latitude}</p>
                     <p>経度: {locationData.Longitude}</p>
-                    <p>BoundingBox: {locationData.BoundingBox}</p>
+                    <p>BoundingBox: {locationData.BoundingBox}</p> */}
                 </>
             ) : (
                 <p>データがありません</p>
             )}
-            <div>useWeatherYahooを呼んで返ってきた天気予報情報を表示する。</div>
+
             {error ? (
                 <p>{error}</p>
             ) : weather ? (

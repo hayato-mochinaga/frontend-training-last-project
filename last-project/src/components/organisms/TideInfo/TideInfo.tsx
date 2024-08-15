@@ -35,7 +35,7 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo }) => {
         <TideInfoWrapper>
             <h2>Tide Information</h2>
             <TideGraph data={tideInfo.tide} sun={tideInfo.sun} />
-            <h3>日出・日没の情報</h3>
+            {/* <h3>日出・日没の情報</h3>
             <p>天文薄明: {tideInfo.sun.astro_twilight.join(' - ')}</p>
             <p>市民薄明: {tideInfo.sun.regular_twilight.join(' - ')}</p>
             <p>日の出: {tideInfo.sun.rise}</p>
@@ -55,7 +55,7 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo }) => {
                 {tideInfo.tide.map((tide, index) => (
                     <li key={index}>時間: {tide.time} - 高さ: {tide.cm}cm</li>
                 ))}
-            </ul>
+            </ul> */}
         </TideInfoWrapper>
     );
 };

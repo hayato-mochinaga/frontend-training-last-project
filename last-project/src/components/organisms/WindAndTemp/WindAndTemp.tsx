@@ -20,16 +20,16 @@ export const WindAndTemp: React.FC<WindAndTempProps> = ({ locationData }) => {
             <h1>WindAndTempComponent</h1>
             {locationData ? (
                 <div>
-                    <p>地名: {locationData.Name}</p>
+                    {/* <p>地名: {locationData.Name}</p>
                     <p>緯度: {locationData.Latitude}</p>
-                    <p>経度: {locationData.Longitude}</p>
+                    <p>経度: {locationData.Longitude}</p> */}
                 </div>
             ) : (
                 <p>データがありません</p>
             )}
             {error ? (
                 <p>{error}</p>
-            ) : isLoading ? ( // ローディング中の場合にローディングアニメーションを表示
+            ) : isLoading ? (
                 <LoadingAnimation />
             ) : windAndTempData ? (
                 <WindAndTempGraph data={windAndTempData} />
@@ -40,8 +40,7 @@ export const WindAndTemp: React.FC<WindAndTempProps> = ({ locationData }) => {
 
 const WindAndTempWrapper = styled.div`
   color: white;
-  border: 1px solid white;
-  border-radius: 5px;
+  height: 100%;
 `;
 
 export default WindAndTemp;

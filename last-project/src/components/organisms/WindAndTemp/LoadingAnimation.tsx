@@ -51,7 +51,7 @@ const LoaderSpan = styled.span<{ i: number }>`
     position: absolute;
     top: 0;
     left: 0;
-    width: 40%; // Spanのサイズを調整可能
+    width: 35.4%; // Spanのサイズを調整可能
     height: 2%; // Spanの高さを調整可能
     border-radius: 55%;
     background-color: #00ff0a;
