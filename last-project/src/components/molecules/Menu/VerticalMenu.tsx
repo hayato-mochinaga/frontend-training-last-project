@@ -15,12 +15,12 @@ export const VerticalMenu: React.FC = () => {
     );
 };
 const MenuContainer = styled('div')({
-    width: '14.5%',
+    width: '100%',
     height: '97vh',
     background: 'linear-gradient(135deg, #00010357 0%, #1d245067 100%)',
     borderRadius: '20px', 
     marginLeft: '0.9%',
-    
+    minWidth: '260px',
 });
 
 const LogoContainer = styled('div')({

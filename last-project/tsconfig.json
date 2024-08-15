@@ -17,11 +17,8 @@
     "baseUrl": ".",
     "paths": {
       "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
-    }
+    },
+    "types": ["jest", "node"]  // 追加
   },
-  "include": ["src"],
-  "references": [
-    
-
-  ]
+  "include": ["src", "src/**/*.test.ts", "src/**/*.test.tsx"]  // テストファイルを含める
 }
