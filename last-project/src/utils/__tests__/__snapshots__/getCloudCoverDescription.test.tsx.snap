@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getCloudCoverDescription 雨の値が0より大きい場合、「雨」とUmbrellaIconを返す 1`] = `
+{
+  "description": "雨",
+  "icon": <Memo
+    style={
+      {
+        "fill": "#ffffff",
+        "marginRight": "0.3rem",
+      }
+    }
+  />,
+}
+`;
+
+exports[`getCloudCoverDescription 雲量が10以下で雨が降っていない場合、「快晴」とFlareIconを返す 1`] = `
+{
+  "description": "快晴",
+  "icon": <Memo
+    style={
+      {
+        "fill": "#ffffff",
+        "marginRight": "0.3rem",
+      }
+    }
+  />,
+}
+`;
+
+exports[`getCloudCoverDescription 雲量が11から80までで雨が降っていない場合、「晴れ」とWbSunnyIconを返す 1`] = `
+{
+  "description": "晴れ",
+  "icon": <Memo
+    style={
+      {
+        "fill": "#ffffff",
+        "marginRight": "0.3rem",
+      }
+    }
+  />,
+}
+`;
+
+exports[`getCloudCoverDescription 雲量が80を超える場合、またはそれ以外の場合で雨が降っていない場合、「曇り」とCloudIconを返す 1`] = `
+{
+  "description": "曇り",
+  "icon": <Memo
+    style={
+      {
+        "fill": "#ffffff",
+        "marginRight": "0.3rem",
+      }
+    }
+  />,
+}
+`;

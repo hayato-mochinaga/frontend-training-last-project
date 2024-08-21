@@ -86,31 +86,42 @@ const GridContainer = styled.div`
 `;
 
 const LocationInfoArea = styled.div`
-    /* border: 1px solid white; */
     border-radius: 10px;
     grid-column: 1 / span 1; /* 横幅2/5 */
     grid-row: 1 / span 1; /* 縦幅2/11 */
 `;
 
 const TideInfoArea = styled.div`
-    border: 1px solid white;
+    background: rgba( 17, 21, 56, 0.15 ); /* 色を変更 */
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 2px );
+    -webkit-backdrop-filter: blur( 2px );
     border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
     padding: 10px;
     grid-column: 2 / span 1; /* 横幅3/5 */
     grid-row: 1 / span 2; /* 縦幅5/11 */
 `;
 
 const RainFallOneHourWidget = styled.div`
-    border: 1px solid white;
+    background: rgba( 17, 21, 56, 0.15 ); /* 色を変更 */
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 2px );
+    -webkit-backdrop-filter: blur( 2px );
     border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
     padding: 10px;
     grid-column: 1 / span 1; /* 横幅2/5 */
     grid-row: 2 / span 1; /* 縦幅3/11 */
 `;
 
 const WindAndTempArea = styled.div`
-    border: 1px solid white;
+    background: rgba( 17, 21, 56, 0.15 ); /* 色を変更 */
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 2px );
+    -webkit-backdrop-filter: blur( 2px );
     border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
     padding: 10px;
     grid-column: 1 / span 2; /* 横幅5/5 */
     grid-row: 3 / span 2; /* 縦幅6/11 */

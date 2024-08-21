@@ -7,7 +7,7 @@ interface WindAndTempData {
     windSpeed: number[];
     windDirection: number[];
     cloudCover: number[];
-    rain: number[]; // 降水量データを追加
+    rain: number[];
 }
 
 const useWindAndTemp = (latitude: string | null, longitude: string | null) => {
@@ -29,25 +29,24 @@ const useWindAndTemp = (latitude: string | null, longitude: string | null) => {
                             hourly: 'temperature_2m,rain,cloud_cover,wind_speed_10m,wind_direction_10m',
                             wind_speed_unit: 'ms',
                             forecast_days: 1,
-                            models: 'jma_seamless'
+                            models: 'jma_seamless',
+                            timezone: 'Asia/Tokyo' 
                         }
                     }
                 );
 
                 const data = response.data.hourly;
+                
                 setWindAndTempData({
                     time: data.time,
                     temperature: data.temperature_2m,
                     windSpeed: data.wind_speed_10m,
                     windDirection: data.wind_direction_10m,
                     cloudCover: data.cloud_cover,
-                    rain: data.rain, // 降水量データを追加
+                    rain: data.rain, 
                 });
             } catch (error) {
-                console.error('Error fetching wind and temperature data', error);
-                if (axios.isAxiosError(error)) {
-                    console.error('Response data:', error.response?.data);
-                }
+                console.error('風速と気温のデータ取得中にエラーが発生しました', error);  // 日本語に変更
                 setError('風速と気温のデータ取得に失敗しました');
             } finally {
                 setIsLoading(false);
