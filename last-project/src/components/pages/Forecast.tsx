@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import SearchArea from '../molecules/SearchArea/SearchArea';
 import { WeatherYahoo } from '../organisms/WeatherYahoo/WeatherYahoo';
-import TideInfo from '../organisms/TideInfo/TideInfo';
+import TideInfoContainer from '../../features/forecast/tide/TideInfoContainer'; 
 import { WindAndTemp } from '../organisms/WindAndTemp/WindAndTemp';
 import LocationInfo from '../organisms/LocationInfo/LocationInfo';
 
@@ -16,7 +16,6 @@ interface ForecastProps {
     onSearch: (query: string) => void;
     locationData: { Name: string; Latitude: string; Longitude: string; BoundingBox: string } | null;
     tideInfoQuery: string; // 新しく追加
-    tideInfo: string;
 }
 
 export const Forecast: React.FC<ForecastProps> = ({
@@ -47,7 +46,7 @@ export const Forecast: React.FC<ForecastProps> = ({
                         <LocationInfo locationData={locationData} />
                     </LocationInfoArea>
                     <TideInfoArea>
-                        <TideInfo query={tideInfoQuery} /> {/* queryを渡す */}
+                        <TideInfoContainer query={tideInfoQuery} /> {/* TideInfoContainerに変更 */}
                     </TideInfoArea>
                     <RainFallOneHourWidget>
                         <WeatherYahoo locationData={locationData} />

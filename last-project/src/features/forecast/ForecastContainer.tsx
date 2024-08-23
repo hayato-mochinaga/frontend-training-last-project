@@ -22,12 +22,13 @@ export const ForecastContainer: React.FC = () => {
     }));
 
     const handleSearch = async (query: string) => {
+        //queryにundefinedが含まれている場合は、undefinedという文字列のみをqueryから削除
+        query = query.replace('undefined', '');
         // geocode処理はそのまま
         const geocodeResult = await geocode(query);
         if (geocodeResult) {
             setLocationData(geocodeResult);
         }
-
         // queryをそのままtideInfoQueryに格納
         setTideInfoQuery(query);
     };

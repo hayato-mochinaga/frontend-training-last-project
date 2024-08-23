@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import useWindAndTemp from '../../../features/forecast/hooks/useWindAndTemp';
 import WindAndTempGraph from './WindAndTempGraph';
-import LoadingAnimation from './LoadingAnimation';
+import LoadingAnimation from '../../molecules/Loading/LoadingAnimation';
 
 interface WindAndTempProps {
     locationData: {

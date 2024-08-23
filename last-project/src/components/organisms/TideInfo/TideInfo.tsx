@@ -1,114 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
+import styled, { keyframes, css } from 'styled-components';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { ports, prefectures } from '../../../features/forecast/constants';
-import useTideInfo from '../../../features/forecast/hooks/useTideInfo';
+import CheckIcon from '@mui/icons-material/Check';
 import TideGraph from './TideGraph';
 
 interface TideInfoProps {
+    tideInfo: any;
+    relevantPorts: { portName: string, furigana: string }[];
+    loading: boolean;
+    error: string | null;
+    handleCopy: (portName: string) => void;
+    toastMessage: string | null;
     query: string;
 }
 
-interface TideData {
-    time: string;
-    unix: number;
-    cm: number;
-}
+const TideInfo: React.FC<TideInfoProps> = ({ tideInfo, relevantPorts, loading, error, handleCopy, toastMessage, query }) => {
 
-interface TideInfoResult {
-    sun: {
-        astro_twilight: string[];
-        regular_twilight: string[];
-        rise: string;
-        midline: string;
-        set: string;
+    const [copiedPort, setCopiedPort] = useState<string | null>(null);
+
+    const handleCopyClick = (portName: string) => {
+        handleCopy(portName);
+        setCopiedPort(portName);
+        setTimeout(() => setCopiedPort(null), 3000);
     };
-    moon: {
-        brightness: string;
-        age: string;
-        title: string;
-        rise: string;
-        midline: string;
-        set: string;
-    };
-    edd: TideData[];
-    flood: TideData[];
-    tide: TideData[];
-}
-
-// 都道府県をクエリから取得する関数
-const getPrefecture = (query: string) => {
-    return prefectures.find(pref => query.includes(pref.label));
-};
-
-// 港の名前をクエリから取得する関数
-const getPortName = (query: string, prefectureLabel: string | undefined) => {
-    return prefectureLabel ? query.replace(prefectureLabel, '').trim() : '';
-};
-
-// 港情報を取得する関数
-const getPort = (portName: string) => {
-    return ports.find(port => portName && portName === port.portName);
-};
-
-// 都道府県内の港のリストを取得する関数
-const getPortsInPrefecture = (prefectureCode: string) => {
-    return ports.filter(port => port.prefectureCode === prefectureCode).map(port => port.portName);
-};
-
-const useFetchTideInfo = (query: string) => {
-    const [tideInfo, setTideInfo] = useState<TideInfoResult | string | null>(null);
-    const [relevantPorts, setRelevantPorts] = useState<{ portName: string, furigana: string }[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-    const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchTideInfo = async () => {
-            setLoading(true);
-            setError(null);
-
-            try {
-                const prefecture = getPrefecture(query);
-                const portName = getPortName(query, prefecture?.label);
-                const port = getPort(portName);
-
-                if (port) {// 潮汐情報が取得可能な港の場合
-                    const tideInfoResult = await useTideInfo(`${port.portCode},${port.prefectureCode}`);
-                    setTideInfo(await tideInfoResult);
-                } else if (prefecture) {
-                    const portsInPrefecture = getPortsInPrefecture(prefecture.prefectureCode);
-                    const portsWithFurigana = portsInPrefecture.map(portName => {
-                        const port = ports.find(p => p.portName === portName);
-                        return { portName: port?.portName || '', furigana: port?.furigana || '' };
-                    });
-                    setRelevantPorts(portsWithFurigana);
-                    setTideInfo(`「${query}」に、該当する港は"潮汐グラフ機能"に対応しておりません。`);
-                } else {
-                    setTideInfo(`「${query}」に、該当する港は"潮汐グラフ機能"に対応しておりません。`);
-                }
-            } catch (error) {
-                setError('潮汐グラフ情報の取得に失敗しました。ネットワークの接続状況を確認し、再度お試しください。');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchTideInfo();
-    }, [query]);
-
-    const handleCopy = (portName: string) => {
-        navigator.clipboard.writeText(portName).then(() => {
-            setToastMessage(`「${portName}」をコピーしました！`);
-            setTimeout(() => setToastMessage(null), 2000); // 2秒後にトーストメッセージを消す
-        });
-    };
-
-    return { tideInfo, relevantPorts, loading, error, handleCopy, toastMessage };
-};
-
-const TideInfo: React.FC<TideInfoProps> = ({ query }) => {
-    const { tideInfo, relevantPorts, loading, error, handleCopy, toastMessage } = useFetchTideInfo(query);
 
     if (loading) {
         return <TideInfoWrapper>ロード中...</TideInfoWrapper>;
@@ -123,8 +37,18 @@ const TideInfo: React.FC<TideInfoProps> = ({ query }) => {
         );
     }
 
+    // "都道府県名と漁港名が入力されていません。" が tideInfo に設定されている場合は、他の要素を表示しない
+    if (tideInfo === "都道府県名と漁港名が入力されていません。") {
+        return (
+            <TideInfoWrapper>
+                <h2>Tide Information</h2>
+                <p>{tideInfo}</p>
+            </TideInfoWrapper>
+        );
+    }
+
     if (typeof tideInfo === 'string' || !tideInfo) {
-        const prefectureLabel = getPrefecture(query)?.label || query.replace('undefined', '');
+        const prefectureLabel = query.includes('undefined') ? query.replace('undefined', '') : query;
         return (
             <TideInfoWrapper>
                 <h2>Tide Information</h2>
@@ -133,19 +57,28 @@ const TideInfo: React.FC<TideInfoProps> = ({ query }) => {
                         <p>{tideInfo}</p>
                         {relevantPorts.length > 0 && (
                             <>
-                                <p>「潮汐グラフ機能」に対応している「{prefectureLabel}」の港の一覧は以下の通りとなります。</p>
+                                <p>潮汐グラフ機能に対応している「{prefectureLabel}」の港の一覧は以下の通りとなります。</p>
                                 <ScrollableList>
                                     {relevantPorts.map((port, index) => (
                                         <ListItem key={index}>
-                                            <CopyIconWrapper>
-                                                <CopyIcon onClick={() => handleCopy(port.portName)}>
-                                                    <ContentCopyIcon fontSize="small" />
-                                                </CopyIcon>
-                                                <Tooltip className="tooltip">
-                                                    {`「${port.portName}」をクリップボードにコピー`}
-                                                </Tooltip>
-                                            </CopyIconWrapper>
                                             {port.portName}（{port.furigana}）
+                                            <CopyIconWrapper>
+                                                {copiedPort !== port.portName && (
+                                                    <Tooltip className="tooltip">
+                                                        {`「${port.portName}」をクリップボードにコピー`}
+                                                    </Tooltip>
+                                                )}
+                                                <CopyIconContainer onClick={() => handleCopyClick(port.portName)}>
+                                                    {copiedPort === port.portName ? (
+                                                        <CopySuccess>
+                                                            <CheckIconStyled fontSize="small" />
+                                                            <CopyText>コピーされました</CopyText>
+                                                        </CopySuccess>
+                                                    ) : (
+                                                        <ContentCopyIconStyled fontSize="small" />
+                                                    )}
+                                                </CopyIconContainer>
+                                            </CopyIconWrapper>
                                         </ListItem>
                                     ))}
                                 </ScrollableList>
@@ -182,10 +115,9 @@ const ScrollableList = styled.ul`
     padding-right: 20px;
     padding-bottom: 10px;
 
-    /* スクロールバーの幅と高さを小さくする */
     &::-webkit-scrollbar {
-        width: 8px;  /* 縦スクロールバーの幅を8pxに設定 */
-        height: 8px;  /* 横スクロールバーの高さを8pxに設定 */
+        width: 8px;
+        height: 8px;
     }
 
     &::-webkit-scrollbar-track {
@@ -205,8 +137,8 @@ const ScrollableList = styled.ul`
 const ListItem = styled.li`
     display: flex;
     align-items: center;
-    gap: 8px; /* アイコンとテキストの間に少し隙間を開ける */
-    margin-bottom: 8px; /* リストの項目間に縦の隙間を少し開ける */
+    gap: 8px;
+    margin-bottom: 8px;
 `;
 
 const CopyIconWrapper = styled.div`
@@ -214,6 +146,8 @@ const CopyIconWrapper = styled.div`
     display: inline-flex;
     align-items: center;
     cursor: pointer;
+    margin-top: 0px;
+    margin-left: -13px;
 
     &:hover .tooltip {
         visibility: visible;
@@ -221,16 +155,58 @@ const CopyIconWrapper = styled.div`
     }
 `;
 
-const CopyIcon = styled.div`
+const fadeIn = keyframes`
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+`;
+
+const fadeOut = keyframes`
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+`;
+
+const CopySuccess = styled.div`
+    display: flex;
+    align-items: center;
+    animation: ${fadeIn} 0.3s ease-in-out, ${fadeOut} 0.3s ease-in-out 2.7s; /* 2.7秒後にフェードアウトを開始 */
+`;
+
+const iconStyles = css`
+    width: 1.07rem; /* アイコンの幅を固定 */
+    height: 1.07rem; /* アイコンの高さを固定 */
+`;
+
+const CopyIconContainer = styled.div`
+    display: flex;
+    align-items: center;
     color: white;
 
     &:hover {
         color: gray;
     }
+`;
 
-    svg {
-        font-size: 1.1rem; /* アイコンのサイズを少し小さく */
-    }
+const ContentCopyIconStyled = styled(ContentCopyIcon)`
+    ${iconStyles}
+`;
+
+const CheckIconStyled = styled(CheckIcon)`
+    ${iconStyles}
+    color: white; /* チェックアイコンはホバーで色が変わらない */
+`;
+
+const CopyText = styled.span`
+    margin-left: 8px;
+    font-size: 0.85rem;
+    color: #ffffffd3;
 `;
 
 const Tooltip = styled.div`
@@ -243,14 +219,12 @@ const Tooltip = styled.div`
     padding: 5px;
     position: absolute;
     z-index: 1;
-    left: 110%; /* ツールチップをアイコンの右側に配置 */
+    left: 110%;
     white-space: nowrap;
-    font-size: 0.75rem; /* ツールチップの文字サイズを小さく */
+    font-size: 0.75rem;
 
-    /* アニメーション効果 */
     transition: opacity 0.3s ease-in 0.6s;
 `;
-
 
 const Toast = styled.div`
     position: fixed;
