@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './app/layout';
 import { ForecastContainer } from './features/forecast/ForecastContainer';
 import Start from './Start';
+import LoadingAnimation from './components/molecules/Loading/LoadingAnimation';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -11,8 +12,8 @@ const AppRoutes: React.FC = () => {
         <Route path="/start" element={<Start />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<ForecastContainer />} />
-          <Route path="aqua" element={<div>aqua</div>} />
         </Route>
+          <Route path="loading" element={<LoadingAnimation/>} />
       </Routes>
     </>
   );

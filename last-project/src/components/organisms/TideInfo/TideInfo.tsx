@@ -3,6 +3,7 @@ import styled, { keyframes, css } from 'styled-components';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import TideGraph from './TideGraph';
+import LoadingAnimation from '../../molecules/Loading/LoadingAnimation';
 
 interface TideInfoProps {
     tideInfo: any;
@@ -24,8 +25,20 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo, relevantPorts, loading, e
         setTimeout(() => setCopiedPort(null), 3000);
     };
 
+    // 都道府県名を抽出する関数
+    const extractPrefecture = (query: string): string => {
+        const prefectures = ["北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県", "茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "新潟県", "富山県", "石川県", "福井県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県", "鳥取県", "島根県", "岡山県", "広島県", "山口県", "徳島県", "香川県", "愛媛県", "高知県", "福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県"];
+        return prefectures.find(prefecture => query.startsWith(prefecture)) || query;
+    };
+
+    const prefectureLabel = extractPrefecture(query);
+
     if (loading) {
-        return <TideInfoWrapper>ロード中...</TideInfoWrapper>;
+        return (
+            <TideInfoWrapper>
+                <LoadingAnimation />
+            </TideInfoWrapper>
+        );
     }
 
     if (error) {
@@ -48,7 +61,6 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo, relevantPorts, loading, e
     }
 
     if (typeof tideInfo === 'string' || !tideInfo) {
-        const prefectureLabel = query.includes('undefined') ? query.replace('undefined', '') : query;
         return (
             <TideInfoWrapper>
                 <h2>Tide Information</h2>
