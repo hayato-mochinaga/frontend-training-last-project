@@ -36,9 +36,9 @@ export const ForecastContainer: React.FC = () => {
     return (
         <Forecast
             prefectureOptions={prefectures}
-            prefectureLabel="都道府県名を入力"
+            prefectureLabel="都道府県名を選択"
             portOptions={portOptions}
-            portLabel="漁港名を入力"
+            portLabel="漁港名を選択"
             onPrefectureChange={(prefecture: string) => {
                 setSelectedPrefecture(prefecture);
                 setShowPortBox(!!prefecture);

@@ -64,7 +64,7 @@ const TideInfoContainer = ({ query }: { query: string }) => {
 
             try {
                 if (!query) {
-                    setTideInfo("都道府県名と漁港名が入力されていません。");
+                    setTideInfo("都道府県名と漁港名が選択されていません。");
                     return;
                 }
 

@@ -50,8 +50,8 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo, relevantPorts, loading, e
         );
     }
 
-    // "都道府県名と漁港名が入力されていません。" が tideInfo に設定されている場合は、他の要素を表示しない
-    if (tideInfo === "都道府県名と漁港名が入力されていません。") {
+    // "都道府県名と漁港名が選択されていません。" が tideInfo に設定されている場合は、他の要素を表示しない
+    if (tideInfo === "都道府県名と漁港名が選択されていません。") {
         return (
             <TideInfoWrapper>
                 <h2>Tide Information</h2>
@@ -218,7 +218,8 @@ const CheckIconStyled = styled(CheckIcon)`
 const CopyText = styled.span`
     margin-left: 8px;
     font-size: 0.85rem;
-    color: #ffffffd3;
+    color: #c7c7c7d2;
+    margin-top: 3px;
 `;
 
 const Tooltip = styled.div`

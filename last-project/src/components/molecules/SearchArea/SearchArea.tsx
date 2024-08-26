@@ -34,7 +34,7 @@ const SearchArea: React.FC<SearchAreaProps> = ({
     onPrefectureChange,
     onSearch
 }) => {
-    const { control, handleSubmit } = useForm<SearchInput>();
+    const { control, handleSubmit, getValues, setError, clearErrors } = useForm<SearchInput>();
     const [selectedPrefecture, setSelectedPrefecture] = useState<string | null>(null);
 
     const handlePrefectureChange = (value: string) => {
@@ -42,7 +42,30 @@ const SearchArea: React.FC<SearchAreaProps> = ({
         onPrefectureChange(value);
     };
 
+    const validateOption = (value: string, options: { label: string }[]) => {
+        return options.some(option => option.label === value);
+    };
+
     const onSubmit: SubmitHandler<SearchInput> = async data => {
+        const isPrefectureValid = validateOption(data.prefecture, prefectureOptions);
+        const isPortValid = validateOption(data.port, portOptions);
+
+        if (!isPrefectureValid) {
+            setError('prefecture', { type: 'manual', message: '選択肢に存在しない都道府県です。' });
+            return;
+        }
+
+        if (selectedPrefecture && !isPortValid) {
+            setError('port', { type: 'manual', message: '選択肢に存在しない港です。' });
+            return;
+        }
+
+        if (selectedPrefecture && !data.port) {
+            setError('port', { type: 'manual', message: '漁港名を選択してください。' });
+            return;
+        }
+
+        clearErrors();
         const query = `${data.prefecture}${data.port}`;
         onSearch(query);
     };
@@ -55,7 +78,7 @@ const SearchArea: React.FC<SearchAreaProps> = ({
                         <Controller
                             name="prefecture"
                             control={control}
-                            render={({ field }) => (
+                            render={({ field, fieldState }) => (
                                 <StyledSearchBox
                                     {...field}
                                     options={prefectureOptions}
@@ -65,6 +88,8 @@ const SearchArea: React.FC<SearchAreaProps> = ({
                                         field.onChange(value);
                                         handlePrefectureChange(value);
                                     }}
+                                    error={!!fieldState.error}
+                                    helperText={fieldState.error?.message}
                                 />
                             )}
                         />
@@ -73,13 +98,15 @@ const SearchArea: React.FC<SearchAreaProps> = ({
                                 <Controller
                                     name="port"
                                     control={control}
-                                    render={({ field }) => (
+                                    render={({ field, fieldState }) => (
                                         <StyledSearchBox
                                             {...field}
                                             options={portOptions}
                                             label={portLabel}
                                             isGroup={false}
                                             onChange={field.onChange}
+                                            error={!!fieldState.error}
+                                            helperText={fieldState.error?.message}
                                         />
                                     )}
                                 />
