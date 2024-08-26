@@ -64,7 +64,7 @@ const TideInfoContainer = ({ query }: { query: string }) => {
 
             try {
                 if (!query) {
-                    setTideInfo("都道府県名と漁港名が選択されていません。");
+                    setTideInfo("本日の詳細な潮汐情報を取得します。");
                     return;
                 }
 

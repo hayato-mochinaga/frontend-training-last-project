@@ -17,7 +17,7 @@ interface TideInfoResult {
     moon: {
         brightness: string;
         age: string;
-        title: string;
+        title: string; // ここで潮汐種別を取得
         rise: string;
         midline: string;
         set: string;
@@ -25,6 +25,7 @@ interface TideInfoResult {
     edd: TideData[];
     flood: TideData[];
     tide: TideData[];
+    tideType: string; // 新しく潮汐種別を追加
 }
 
 const useTideInfo = async (query: string): Promise<TideInfoResult | string> => {
@@ -67,6 +68,7 @@ const useTideInfo = async (query: string): Promise<TideInfoResult | string> => {
             edd,
             flood,
             tide,
+            tideType: moon.title, // 潮汐種別を返す
         };
     } catch (error) {
         console.error('潮汐情報の取得に失敗しました:', error);

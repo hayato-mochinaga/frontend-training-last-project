@@ -36,7 +36,10 @@ const LocationInfo: React.FC<LocationInfoProps> = ({ locationData }) => {
                         <p className="location">{getLocationParts(locationData.Name).rest}</p>
                     </>
                 ) : (
-                    <p>都道府県名・漁港名で検索して下さい</p>
+                    <>
+                        <p className="info-text">都道府県名・漁港名を選択し、検索してください。</p>
+                        <p className="info-text">周辺情報を取得します。</p>
+                    </>
                 )}
             </LocationInfoWrapper>
         </BackgroundWrapper>
@@ -76,6 +79,10 @@ const LocationInfoWrapper = styled.div`
     .location {
         font-size: 39px; /* 地名のフォントサイズ（都道府県名より大きい） */
         font-weight: bold; /* 強調表示 */
+    }
+
+    .info-text {
+        margin-bottom: 8px; /* 2つのp要素間の間隔を少し開ける */
     }
 `;
 

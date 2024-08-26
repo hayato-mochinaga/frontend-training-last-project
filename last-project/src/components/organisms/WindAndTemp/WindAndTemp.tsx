@@ -17,7 +17,7 @@ export const WindAndTemp: React.FC<WindAndTempProps> = ({ locationData }) => {
 
     return (
         <WindAndTempWrapper>
-            <h1>WindAndTempComponent</h1>
+            <Title>1時間ごとの気象予報</Title>
             {locationData ? (
                 <div>
                     {/* <p>地名: {locationData.Name}</p>
@@ -25,14 +25,16 @@ export const WindAndTemp: React.FC<WindAndTempProps> = ({ locationData }) => {
                     <p>経度: {locationData.Longitude}</p> */}
                 </div>
             ) : (
-                <p>データがありません</p>
+                <Text>1時間ごとの風速・風向を含めた気象予報を取得します。</Text>
             )}
             {error ? (
-                <p>{error}</p>
+                <Text>{error}</Text>
             ) : isLoading ? (
                 <LoadingAnimation />
             ) : windAndTempData ? (
-                <WindAndTempGraph data={windAndTempData} />
+                <GraphContainer>
+                    <WindAndTempGraph data={windAndTempData} />
+                </GraphContainer>
             ) : null}
         </WindAndTempWrapper>
     );
@@ -41,6 +43,20 @@ export const WindAndTemp: React.FC<WindAndTempProps> = ({ locationData }) => {
 const WindAndTempWrapper = styled.div`
   color: white;
   height: 100%;
+`;
+
+const Title = styled.h1`
+  font-family: 'Shippori Antique', serif;
+  font-weight: 300;
+`;
+
+const Text = styled.p`
+  font-family: 'Shippori Antique', serif;
+  font-weight: 300;
+`;
+
+const GraphContainer = styled.div`
+  /* グラフにはフォントスタイルを適用しないためのコンテナ */
 `;
 
 export default WindAndTemp;

@@ -19,7 +19,7 @@ interface SearchBoxProps {
     onChange?: (value: string) => void;
 }
 
-const StyledAutocomplete = styled(Autocomplete<PrefectureOptionType>)({
+const StyledAutocomplete = styled(Autocomplete)<{ hasError: boolean }>(({ hasError }) => ({
     '& .MuiInputLabel-root': {
         color: 'white',
     },
@@ -29,19 +29,19 @@ const StyledAutocomplete = styled(Autocomplete<PrefectureOptionType>)({
         borderRadius: '16px',
     },
     '& .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#E2E8F0',
+        borderColor: hasError ? 'red' : '#E2E8F0',
         borderRadius: '16px',
     },
     '&:hover .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#E2E8F0',
+        borderColor: hasError ? 'red' : '#E2E8F0',
     },
     '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#E2E8F0',
+        borderColor: hasError ? 'red' : '#E2E8F0',
     },
     '& .MuiSvgIcon-root': {
         color: 'white',
     },
-});
+}));
 
 const aiueoOrder = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわ';
 
@@ -159,6 +159,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
                             }
                             handleOptionValidation(newLabel);
                         }}
+                        hasError={!!error} // バリデーションエラー時のスタイル適用
                     />
                 </>
             )}

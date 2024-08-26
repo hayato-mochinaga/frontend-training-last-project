@@ -12,11 +12,13 @@ interface WeatherData {
 const useWeatherYahoo = (latitude: string | null, longitude: string | null) => {
     const [weather, setWeather] = useState<WeatherData | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false); // ローディング状態を管理するためのステート
 
     useEffect(() => {
         if (!latitude || !longitude) return;
 
         const fetchWeather = async () => {
+            setIsLoading(true); // APIリクエスト開始時にローディング状態をtrueに設定
             try {
                 const response = await axios.get(
                     '/api/weather/V1/place', {
@@ -38,13 +40,16 @@ const useWeatherYahoo = (latitude: string | null, longitude: string | null) => {
                     console.error('Response data:', error.response?.data);
                 }
                 setError('天気データの取得に失敗しました');
+            } finally {
+                setIsLoading(false); // APIリクエストが完了したらローディング状態をfalseに設定
             }
         };
 
         fetchWeather();
     }, [latitude, longitude]);
 
-    return { weather, error };
+    return { weather, error, isLoading }; // isLoadingを返す
 };
 
 export default useWeatherYahoo;
+

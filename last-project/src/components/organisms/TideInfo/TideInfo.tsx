@@ -44,18 +44,18 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo, relevantPorts, loading, e
     if (error) {
         return (
             <TideInfoWrapper>
-                <h2>Tide Information</h2>
-                <p>{error}</p>
+                <Title>本日の潮汐グラフ</Title>
+                <Message>{error}</Message>
             </TideInfoWrapper>
         );
     }
 
-    // "都道府県名と漁港名が選択されていません。" が tideInfo に設定されている場合は、他の要素を表示しない
-    if (tideInfo === "都道府県名と漁港名が選択されていません。") {
+    // "本日の潮汐情報を取得します。" が tideInfo に設定されている場合は、他の要素を表示しない
+    if (tideInfo === "本日の詳細な潮汐情報を取得します。") {
         return (
             <TideInfoWrapper>
-                <h2>Tide Information</h2>
-                <p>{tideInfo}</p>
+                <Title>本日の潮汐グラフ</Title>
+                <Message>{tideInfo}</Message>
             </TideInfoWrapper>
         );
     }
@@ -63,10 +63,10 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo, relevantPorts, loading, e
     if (typeof tideInfo === 'string' || !tideInfo) {
         return (
             <TideInfoWrapper>
-                <h2>Tide Information</h2>
+                <Title>本日の潮汐グラフ</Title>
                 {typeof tideInfo === 'string' && (
                     <>
-                        <p>{tideInfo}</p>
+                        <Message>{tideInfo}</Message>
                         {relevantPorts.length > 0 && (
                             <>
                                 <p>潮汐グラフ機能に対応している「{prefectureLabel}」の港の一覧は以下の通りとなります。</p>
@@ -105,7 +105,8 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo, relevantPorts, loading, e
 
     return (
         <TideInfoWrapper>
-            <h2>{query}港の本日の潮汐グラフ</h2>
+            <Title>{query}港の本日の潮汐グラフ</Title>
+            <SubTitle>潮汐種別：{tideInfo.tideType}</SubTitle> {/* 潮汐種別を表示 */}
             <TideGraph data={tideInfo.tide} sun={tideInfo.sun} />
         </TideInfoWrapper>
     );
@@ -118,6 +119,21 @@ const TideInfoWrapper = styled.div`
     display: flex;
     flex-direction: column;
     overflow: hidden;
+`;
+
+const Title = styled.h2`
+    font-family: 'Shippori Antique', serif;
+    font-weight: 300;
+`;
+
+const SubTitle = styled.h3`
+    font-family: 'Shippori Antique', serif;
+    margin-top: -10px;
+    font-weight: 300;
+`;
+
+const Message = styled.p`
+    font-family: 'Shippori Antique', serif;
 `;
 
 const ScrollableList = styled.ul`

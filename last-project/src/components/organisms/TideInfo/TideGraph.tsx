@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, ReferenceLine, ReferenceDot
 } from 'recharts';
+import styled, { keyframes } from 'styled-components';
 
 interface TideGraphProps {
     data: Array<{ time: string; cm: number; unix: number }>;
@@ -26,15 +27,36 @@ const CustomReferenceLabel: React.FC<CustomReferenceLabelProps> = ({ viewBox, va
     );
 };
 
-// 現在時刻専用のカスタムラベルコンポーネント
+// 「:」の点滅アニメーション
+const blink = keyframes`
+  0%, 50% {
+    opacity: 1;
+  }
+  50.1%, 100% {
+    opacity: 0;
+  }
+`;
+
+// 点滅する「:」を含む現在時刻のラベルコンポーネント
 const CurrentTimeLabel: React.FC<CustomReferenceLabelProps> = ({ viewBox, value }) => {
     const { x, y } = viewBox;
+
+    // 「:」の部分をアニメーションさせるために分割
+    const [hours, minutes] = value.split(':');
+
     return (
         <text x={x} y={y - 10} fill="#00ff00" fontSize="13.4" fontWeight='500' textAnchor="middle">
-            {value}
+            {hours}
+            <BlinkingColon>:</BlinkingColon>
+            {minutes}
         </text>
     );
 };
+
+// 点滅する「:」のスタイルコンポーネント
+const BlinkingColon = styled.tspan`
+  animation: ${blink} 2s infinite;
+`;
 
 const roundToNearestTwentyMinutes = (time: string): string => {
     const [hours, minutes] = time.split(':').map(Number);

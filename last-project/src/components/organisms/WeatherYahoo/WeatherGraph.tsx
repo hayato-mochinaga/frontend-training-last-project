@@ -2,10 +2,12 @@ import React from 'react';
 import {
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart
 } from 'recharts';
+import { getRainfallDescription } from '../../../utils/getRainfallDescription';
 
 interface WeatherGraphProps {
     data: Array<{ time: string; rainfall: number }>;
 }
+
 
 const WeatherGraph: React.FC<WeatherGraphProps> = ({ data }) => {
     return (
@@ -28,10 +30,14 @@ const WeatherGraph: React.FC<WeatherGraphProps> = ({ data }) => {
                 <Tooltip
                     content={({ payload, label }) => {
                         if (payload && payload.length) {
+                            const rainfallDescription = getRainfallDescription(payload[0].value);
                             return (
                                 <div className="custom-tooltip" style={{ backgroundColor: 'rgba(0, 0, 0, 0.778)', padding: '1.4rem 1.01rem 1.4rem 1.01rem', borderRadius: '5px', color: 'white', lineHeight: '1.33em' }}>
-                                    <p className="label" style={{ fontSize: '1.06em', fontWeight: '500', margin: '0' }}>{`${label}`}</p>
-                                    <p className="label" style={{ margin: '0' }}>降雨量：<span style={{ fontSize: '1.4em', fontWeight: 'bold' }}>{`${payload[0].value}`}</span> mm</p>
+                                    <p className="label" style={{ fontSize: '0.95em', fontWeight: '500', margin: '0' }}>{`${label}`}</p>
+                                    {rainfallDescription && (
+                                        <p className="label" style={{ margin: '0', fontSize: '0.85em' }}>{rainfallDescription}</p>
+                                    )}
+                                    <p className="label" style={{ margin: '0', fontSize: '0.95em' }}>降雨量：<span style={{ fontSize: '1.4em', fontWeight: 'bold' }}>{`${payload[0].value}`}</span> mm</p>
                                 </div>
                             );
                         }

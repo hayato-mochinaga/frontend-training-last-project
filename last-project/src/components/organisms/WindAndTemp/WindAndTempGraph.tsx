@@ -105,7 +105,7 @@ const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
                     />
                 </ComposedChart>
             </ResponsiveContainer>
-            <h2>openmeteo API responseData</h2>
+            {/* <h2>openmeteo API responseData</h2>
             <ul>
                 {data.time.map((time, index) => (
                     <li key={index}>
@@ -117,7 +117,7 @@ const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
                         <p>降水量: {data.rain[index]}mm</p>
                     </li>
                 ))}
-            </ul>
+            </ul> */}
         </>
     );
 };

@@ -34,8 +34,9 @@ const SearchArea: React.FC<SearchAreaProps> = ({
     onPrefectureChange,
     onSearch
 }) => {
-    const { control, handleSubmit, getValues, setError, clearErrors } = useForm<SearchInput>();
+    const { control, handleSubmit, setError, clearErrors } = useForm<SearchInput>();
     const [selectedPrefecture, setSelectedPrefecture] = useState<string | null>(null);
+    const [shakeButton, setShakeButton] = useState<boolean>(false); // 追加: アニメーションのための状態
 
     const handlePrefectureChange = (value: string) => {
         setSelectedPrefecture(value);
@@ -52,22 +53,27 @@ const SearchArea: React.FC<SearchAreaProps> = ({
 
         if (!isPrefectureValid) {
             setError('prefecture', { type: 'manual', message: '選択肢に存在しない都道府県です。' });
+            setShakeButton(true); // 入力が正しくない場合にボタンを震えさせる
+            setTimeout(() => setShakeButton(false), 300); // アニメーション後に状態をリセット
             return;
         }
 
         if (selectedPrefecture && !isPortValid) {
             setError('port', { type: 'manual', message: '選択肢に存在しない港です。' });
+            setShakeButton(true); // 入力が正しくない場合にボタンを震えさせる
+            setTimeout(() => setShakeButton(false), 300); // アニメーション後に状態をリセット
             return;
         }
 
         if (selectedPrefecture && !data.port) {
             setError('port', { type: 'manual', message: '漁港名を選択してください。' });
+            setShakeButton(true); // 入力が正しくない場合にボタンを震えさせる
+            setTimeout(() => setShakeButton(false), 300); // アニメーション後に状態をリセット
             return;
         }
 
         clearErrors();
-        const query = `${data.prefecture}${data.port}`;
-        onSearch(query);
+        onSearch(`${data.prefecture}${data.port}`);
     };
 
     return (
@@ -114,7 +120,12 @@ const SearchArea: React.FC<SearchAreaProps> = ({
                         </PortSearchBoxWrapper>
                     </SearchBoxWrapper>
                     <StyledSearchButtonWrapper>
-                        <StyledSearchButton color="white" size={39} />
+                        <StyledSearchButton
+                            color="white"
+                            size={39}
+                            shake={shakeButton} // 追加: アニメーションを制御するプロパティ
+                            onClick={() => handleSubmit(onSubmit)()} // ボタンクリック時に送信をトリガー
+                        />
                     </StyledSearchButtonWrapper>
                 </SearchAreaWrapper>
             </form>
