@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 interface LocationInfoProps {
     locationData: {
@@ -8,9 +8,10 @@ interface LocationInfoProps {
 }
 
 const LocationInfo: React.FC<LocationInfoProps> = ({ locationData }) => {
-    const [backgroundImage, setBackgroundImage] = useState<string>('/static/media/locationBack/locationBack1.png');
+    const [currentBackgroundImage, setCurrentBackgroundImage] = useState<string>('/static/media/locationBack/locationBack1.png');
+    const [nextBackgroundImage, setNextBackgroundImage] = useState<string | null>(null);
+    const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
-    // 都道府県名とそれ以降の地名に分割するロジック
     const getLocationParts = (name: string) => {
         const [prefecture, ...rest] = name.split(/(?<=県|府|都|道)/);
         return {
@@ -19,16 +20,29 @@ const LocationInfo: React.FC<LocationInfoProps> = ({ locationData }) => {
         };
     };
 
-    // locationDataが変わるたびにランダムな背景画像を設定
     useEffect(() => {
-        if (locationData) {
+        if (locationData && !isAnimating) {
             const randomImageNumber = Math.floor(Math.random() * 14) + 1;
-            setBackgroundImage(`/static/media/locationBack/locationBack${randomImageNumber}.png`);
+            const newImage = `/static/media/locationBack/locationBack${randomImageNumber}.png`;
+
+            // アニメーションが完了するまで次のアニメーションを防ぐ
+            setIsAnimating(true);
+            setNextBackgroundImage(newImage);
+
+            setTimeout(() => {
+                setCurrentBackgroundImage(newImage);
+                setNextBackgroundImage(null);
+                setIsAnimating(false);  // アニメーションが完了したらリセット
+            }, 500); // アニメーションの時間に合わせる
         }
     }, [locationData]);
 
     return (
-        <BackgroundWrapper backgroundImage={backgroundImage}>
+        <BackgroundWrapper>
+            <BackgroundLayer backgroundImage={currentBackgroundImage} />
+            {nextBackgroundImage && (
+                <BackgroundLayer backgroundImage={nextBackgroundImage} isFadingIn />
+            )}
             <LocationInfoWrapper>
                 {locationData ? (
                     <>
@@ -46,43 +60,66 @@ const LocationInfo: React.FC<LocationInfoProps> = ({ locationData }) => {
     );
 };
 
-const BackgroundWrapper = styled.div<{ backgroundImage: string }>`
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+// フェードインアニメーションを定義
+const fadeIn = keyframes`
+    from { opacity: 0; filter: blur(10px); }
+    to { opacity: 1; filter: blur(0); }
+`;
+
+const BackgroundWrapper = styled.div`
+    position: relative;
     min-height: 170px;
     height: 100%;
     width: 100%;
+    border-radius: 10px;
+    overflow: hidden; /* 背景画像がコンテナからはみ出さないようにする */
+`;
+
+const BackgroundLayer = styled.div<{ backgroundImage: string; isFadingIn?: boolean }>`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-image: url(${(props) => props.backgroundImage});
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 10px;
+    transition: opacity 0.5s ease-in-out;
+    opacity: ${(props) => (props.isFadingIn ? 0 : 1)};
+    animation: ${(props) => props.isFadingIn && fadeIn} 0.5s ease-in-out forwards;
 `;
 
 const LocationInfoWrapper = styled.div`
+    position: relative; /* 背景画像の上に表示するために相対位置を設定 */
     color: white;
     padding: 10px;
     margin-left: 20px;
+    z-index: 1; /* 背景画像の上に表示されるようにする */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 上下中央に配置 */
+    height: 100%; /* 親要素の高さを継承して、中央配置を正確に行う */
 
     p {
         font-family: 'Shippori Mincho B1', serif;
+        font-size: large;
         margin: 0;
-        line-height: 1; /* 行の高さを縮める */
+        line-height: 1;
     }
 
     .prefecture {
-        font-size: 14px; /* 都道府県名のフォントサイズ */
-        margin-bottom: 2px; /* 県名と地名の間隔を縮める */
+        font-size: 14px;
+        margin-bottom: 2px;
     }
 
     .location {
-        font-size: 39px; /* 地名のフォントサイズ（都道府県名より大きい） */
-        font-weight: bold; /* 強調表示 */
+        font-size: 39px;
+        font-weight: bold;
     }
 
     .info-text {
-        margin-bottom: 8px; /* 2つのp要素間の間隔を少し開ける */
+        margin-bottom: 8px;
     }
 `;
 

@@ -121,7 +121,7 @@ const TideInfoWrapper = styled.div`
     overflow: hidden;
 `;
 
-const Title = styled.h2`
+const Title = styled.h1`
     font-family: 'Shippori Antique', serif;
     font-weight: 300;
 `;

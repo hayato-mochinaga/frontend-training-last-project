@@ -4,6 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { ports } from '../../../features/forecast/constants'; // portsをインポート
 
 interface PrefectureOptionType {
     label: string;
@@ -76,12 +77,21 @@ const normalizeCharacter = (char: string) => {
     }
 };
 
+const markPortName = (label: string) => {
+    const isMarkedPort = ports.some(port => port.portName === label);
+    return isMarkedPort ? `${label} (🌒潮汐グラフ対応)` : label; // ラベルに「(潮汐グラフ対応漁港)」を追加
+};
+
 export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, name, onChange }) => {
     const [displayLabel, setDisplayLabel] = useState(label);
     const [error, setError] = useState<string | null>(null);
     const { control } = useForm();
 
-    const sortedOptions = options.sort((a, b) => {
+    const sortedOptions = options.map(option => ({
+        ...option,
+        displayLabel: markPortName(option.label), // 表示用のlabelに「(潮汐グラフ対応漁港)」を追加
+        originalLabel: option.label // 元のlabelを保持
+    })).sort((a, b) => {
         if (isGroup) {
             const aChar = normalizeCharacter(a.furigana.charAt(0));
             const bChar = normalizeCharacter(b.furigana.charAt(0));
@@ -94,7 +104,9 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
     });
 
     const handleOptionValidation = (value: string) => {
-        const isValid = sortedOptions.some(option => option.label === value);
+        // 「(潮汐グラフ対応漁港)」を除去してからバリデーションを行う
+        const normalizedValue = value.replace(' (🌒潮汐グラフ対応)', '');
+        const isValid = sortedOptions.some(option => option.originalLabel === normalizedValue); // originalLabelでバリデーション
         if (!isValid) {
             setError('選択肢に存在しない値です。');
         } else {
@@ -113,14 +125,14 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
                         disablePortal
                         options={sortedOptions}
                         groupBy={isGroup ? (option) => normalizeCharacter(option.furigana.charAt(0)) : undefined}
-                        getOptionLabel={(option) => option.label}
+                        getOptionLabel={(option) => option.displayLabel} // 表示用のlabelを使う
                         filterOptions={(options, state) =>
                             options.filter(option =>
-                                (option.label && option.label.includes(state.inputValue ?? '')) ||
+                                (option.displayLabel && option.displayLabel.includes(state.inputValue ?? '')) ||
                                 (option.furigana && option.furigana.includes(state.inputValue ?? ''))
                             )
                         }
-                        freeSolo={false}  // オプションからの選択を強制する設定
+                        freeSolo={false}
                         sx={{ width: 270, height: 0 }}
                         inputValue={field.value}
                         onInputChange={(event, newInputValue) => {
@@ -134,16 +146,15 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
                             <TextField
                                 {...params}
                                 label={displayLabel}
-                                onFocus={() => setDisplayLabel(label)} // フォーカス時にラベルを「都道府県名を選択」のままにする
+                                onFocus={() => setDisplayLabel(label)}
                                 onBlur={(event) => {
                                     const inputValue = event.target.value;
-
                                     if (!inputValue) {
-                                        setDisplayLabel(label); // 空の時は「都道府県名を選択」に戻す
+                                        setDisplayLabel(label);
                                     } else if (!handleOptionValidation(inputValue)) {
-                                        setDisplayLabel(label); // 無効な値なら「都道府県名を選択」に戻す
+                                        setDisplayLabel(label);
                                     } else {
-                                        setDisplayLabel(label.slice(0, -3)); // 有効な値なら「都道府県名」にする
+                                        setDisplayLabel(label.slice(0, -3));
                                     }
                                 }}
                                 error={!!error}
@@ -152,14 +163,14 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
                         )}
                         value={field.value}
                         onChange={(event, newValue) => {
-                            const newLabel = newValue?.label ?? '';
+                            const newLabel = newValue?.originalLabel ?? ''; // originalLabelを使用
                             field.onChange(newLabel);
                             if (onChange) {
                                 onChange(newLabel);
                             }
                             handleOptionValidation(newLabel);
                         }}
-                        hasError={!!error} // バリデーションエラー時のスタイル適用
+                        hasError={!!error}
                     />
                 </>
             )}

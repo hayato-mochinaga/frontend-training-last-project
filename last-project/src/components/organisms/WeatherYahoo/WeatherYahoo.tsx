@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import useWeatherYahoo from '../../../features/forecast/hooks/useWeatherYahoo';
 import WeatherGraph from './WeatherGraph';
 import { getRainfallDescription } from '../../../utils/getRainfallDescription';
-import LoadingAnimation from '../../molecules/Loading/LoadingAnimation'; // LoadingAnimationをインポート
+import LoadingAnimation from '../../molecules/Loading/LoadingAnimation';
 
 interface WeatherYahooProps {
     locationData: {
@@ -37,22 +37,19 @@ export const WeatherYahoo: React.FC<WeatherYahooProps> = ({ locationData }) => {
             return "雨が続きます。";
         }
 
-        if (rainStartIndex === 0) {
-            return `${weatherData[rainEndIndex].time.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}に雨が止みます。`;
-        }
-
-        if (rainStartIndex > 0) {
+        if (rainStartIndex >= 0) {
             const minutesToRain = Math.floor((weatherData[rainStartIndex].time.getTime() - now.getTime()) / (1000 * 60));
             const rainfallDescription = getRainfallDescription(weatherData[rainStartIndex].rainfall);
 
-            // 最初の時刻の降雨量が0以上の場合のみメッセージを表示
-            if (minutesToRain >= 10) {
+            // 取得した最初の時刻の降雨量が0より大きい場合でもメッセージを正確に表示
+            if (minutesToRain >= 0) {
                 return `約${minutesToRain}分後に${rainfallDescription}が降ります。`;
             }
         }
 
         return '';
     };
+
 
     return (
         <WeatherYahooWrapper>
@@ -62,13 +59,15 @@ export const WeatherYahoo: React.FC<WeatherYahooProps> = ({ locationData }) => {
                     <p className="locationName">{rainMessage()}</p>
                 </>
             ) : (
-                    <p className="noData">直近1時間の精密な降雨量情報を取得します。</p>
+                <p className="noData">直近1時間の精密な降雨量情報を取得します。</p>
             )}
 
             {error ? (
                 <p className="error">{error}</p>
-            ) : isLoading ? ( // LoadingAnimationを表示
-                <LoadingAnimation />
+            ) : isLoading ? (
+                <LoadingWrapper> {/* LoadingAnimationを中央に配置 */}
+                    <LoadingAnimation />
+                </LoadingWrapper>
             ) : weather ? (
                 <WeatherGraph data={weatherData.map(item => ({
                     time: item.time.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
@@ -83,14 +82,28 @@ const WeatherYahooWrapper = styled.div`
   color: white;
   border-radius: 5px;
 
-  /* WeatherGraph に影響を与えないように、特定のクラスにのみフォントを適用 */
   .title, .noData, .error, .loading {
     font-family: 'Shippori Mincho B1', serif;
   }
 
-  .locationName {
-    font-family: 'Shippori Antique', serif; /* このクラスにだけ Shippori Antique を適用 */
+  .title {
+    font-family: 'Shippori Antique', serif;
+    font-weight: 300;
+    font-size: 1.5rem;
+    margin-bottom: 1rem; /* タイトルと下のコンテンツ間のスペースを追加 */
   }
+
+  .locationName {
+    font-family: 'Shippori Antique', serif;
+    font-weight: 300;
+  }
+`;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px; /* ローディングアニメーションのためのエリアを確保 */
 `;
 
 export default WeatherYahoo;

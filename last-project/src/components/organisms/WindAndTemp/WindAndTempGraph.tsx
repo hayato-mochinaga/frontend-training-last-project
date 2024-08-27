@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, ComposedChart, Bar, ReferenceLine, Cell
+    XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, ComposedChart, Bar, ReferenceLine, Cell, LineProps
 } from 'recharts';
 import NavigationIcon from '@mui/icons-material/Navigation';
 import { getWindSpeedDescription } from '../../../utils/getWindSpeedDescription';
@@ -20,6 +20,25 @@ interface WindAndTempGraphProps {
         rain: number[];
     };
 }
+
+// 気温に基づく色を決定する関数
+const getTemperatureColor = (temperature: number): string => {
+    if (temperature <= 0) return "#00f"; // 0°C以下は青色
+    if (temperature <= 10) return "#1e90ff"; // 1°C〜10°Cは少し明るい青色
+    if (temperature <= 20) return "#00ff00"; // 11°C〜20°Cは緑色
+    if (temperature <= 30) return "#ffd700"; // 21°C〜30°Cは黄色
+    return "#ff4500"; // 31°C以上は赤色
+};
+
+// カスタムラインプロップ
+const CustomizedDot: React.FC<LineProps> = (props) => {
+    const { cx, cy, payload } = props;
+    const temperatureColor = getTemperatureColor(payload.temperature);
+
+    return (
+        <circle cx={cx} cy={cy} r={2} fill={temperatureColor} stroke="none" />
+    );
+};
 
 const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
     const averageTemperature = data.temperature.reduce((sum, temp) => sum + temp, 0) / data.temperature.length;
@@ -95,7 +114,16 @@ const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
                             <Cell key={`cell-${index}`} fill={getBarColor(entry.cloudCover, entry.rain)} />
                         ))}
                     </Bar>
-                    <Line yAxisId="left" type="monotone" dataKey="temperature" stroke="#ff7300" strokeWidth={2} />
+                    <Line 
+                        yAxisId="left" 
+                        type="monotone" 
+                        dataKey="temperature" 
+                        stroke="#ff7300" 
+                        strokeWidth={2} 
+                        dot={<CustomizedDot />}
+                        activeDot={{ r: 8 }}
+                        strokeDasharray="none"
+                    />
                     <ReferenceLine
                         y={averageTemperature}
                         yAxisId="left"
@@ -105,19 +133,6 @@ const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
                     />
                 </ComposedChart>
             </ResponsiveContainer>
-            {/* <h2>openmeteo API responseData</h2>
-            <ul>
-                {data.time.map((time, index) => (
-                    <li key={index}>
-                        <p>時間: {formatTime(time)}</p>
-                        <p>気温: {data.temperature[index]}°C</p>
-                        <p>風速: {data.windSpeed[index]} m/s</p>
-                        <p>風向: {data.windDirection[index]}°</p>
-                        <p>雲量: {data.cloudCover[index]}%</p>
-                        <p>降水量: {data.rain[index]}mm</p>
-                    </li>
-                ))}
-            </ul> */}
         </>
     );
 };

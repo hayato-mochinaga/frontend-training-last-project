@@ -39,8 +39,9 @@ const SearchArea: React.FC<SearchAreaProps> = ({
     const [shakeButton, setShakeButton] = useState<boolean>(false); // 追加: アニメーションのための状態
 
     const handlePrefectureChange = (value: string) => {
-        setSelectedPrefecture(value);
-        onPrefectureChange(value);
+        const isValidPrefecture = validateOption(value, prefectureOptions);
+        setSelectedPrefecture(isValidPrefecture ? value : null); // 選択肢にある場合のみセットする
+        onPrefectureChange(isValidPrefecture ? value : '');
     };
 
     const validateOption = (value: string, options: { label: string }[]) => {
