@@ -2,7 +2,7 @@ import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled } from '@mui/material/styles';
 
-interface SearchButtonProps {
+export interface SearchButtonProps {
     color?: string;
     size?: number;
     onClick?: () => void;

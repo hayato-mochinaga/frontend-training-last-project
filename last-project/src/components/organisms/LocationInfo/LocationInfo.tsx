@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 interface LocationInfoProps {
@@ -12,13 +12,15 @@ const LocationInfo: React.FC<LocationInfoProps> = ({ locationData }) => {
     const [nextBackgroundImage, setNextBackgroundImage] = useState<string | null>(null);
     const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
-    const getLocationParts = (name: string) => {
-        const [prefecture, ...rest] = name.split(/(?<=県|府|都|道)/);
+    // getLocationPartsをuseMemoでmemo化
+    const getLocationParts = useMemo(() => {
+        if (!locationData) return { prefecture: '', rest: '' };
+        const [prefecture, ...rest] = locationData.Name.split(/(?<=県|府|都|道)/);
         return {
             prefecture,
             rest: rest.join(''),
         };
-    };
+    }, [locationData]);
 
     useEffect(() => {
         if (locationData && !isAnimating) {
@@ -46,12 +48,12 @@ const LocationInfo: React.FC<LocationInfoProps> = ({ locationData }) => {
             <LocationInfoWrapper>
                 {locationData ? (
                     <>
-                        <p className="prefecture">{getLocationParts(locationData.Name).prefecture}</p>
-                        <p className="location">{getLocationParts(locationData.Name).rest}</p>
+                        <p className="prefecture">{getLocationParts.prefecture}</p>
+                        <p className="location">{getLocationParts.rest}</p>
                     </>
                 ) : (
                     <>
-                        <p className="info-text">都道府県名・漁港名を選択し、検索してください。</p>
+                        <p className="info-text">都道府県名と漁港名を選択し、検索してください。</p>
                         <p className="info-text">周辺情報を取得します。</p>
                     </>
                 )}
@@ -119,6 +121,7 @@ const LocationInfoWrapper = styled.div`
     }
 
     .info-text {
+        font-size: 18px;
         margin-bottom: 8px;
     }
 `;

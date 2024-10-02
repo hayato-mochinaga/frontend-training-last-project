@@ -18,6 +18,7 @@ interface SearchBoxProps {
     isGroup: boolean;
     name: string;
     onChange?: (value: string) => void;
+    onInputChange?: (newValue: string) => void; // onInputChange追加
 }
 
 const StyledAutocomplete = styled(Autocomplete)<{ hasError: boolean }>(({ hasError }) => ({
@@ -82,7 +83,7 @@ const markPortName = (label: string) => {
     return isMarkedPort ? `${label} (🌒潮汐グラフ対応)` : label; // ラベルに「(潮汐グラフ対応漁港)」を追加
 };
 
-export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, name, onChange }) => {
+export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, name, onChange, onInputChange }) => {
     const [displayLabel, setDisplayLabel] = useState(label);
     const [error, setError] = useState<string | null>(null);
     const { control } = useForm();
@@ -140,6 +141,9 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
                             if (onChange) {
                                 onChange(newInputValue);
                             }
+                            if (onInputChange) {
+                                onInputChange(newInputValue); // onInputChangeが指定されている場合は呼び出す
+                            }
                             handleOptionValidation(newInputValue);
                         }}
                         renderInput={(params) => (
@@ -171,7 +175,9 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ options, label, isGroup, n
                             handleOptionValidation(newLabel);
                         }}
                         hasError={!!error}
+                        noOptionsText="候補に存在しません" // 追加: オプションがない場合のメッセージを変更
                     />
+
                 </>
             )}
         />

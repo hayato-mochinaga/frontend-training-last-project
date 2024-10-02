@@ -29,7 +29,7 @@ const useWindAndTemp = (latitude: string | null, longitude: string | null) => {
                             hourly: 'temperature_2m,rain,cloud_cover,wind_speed_10m,wind_direction_10m',
                             wind_speed_unit: 'ms',
                             forecast_days: 1,
-                            models: 'jma_seamless',
+                            // models: 'jma_seamless',
                             timezone: 'Asia/Tokyo' 
                         }
                     }

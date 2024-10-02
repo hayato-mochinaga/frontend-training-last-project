@@ -52,6 +52,8 @@ const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
         rain: data.rain[index],
     }));
 
+    console.log(data);
+
     return (
         <>
             <ResponsiveContainer width="100%" height={300}>
@@ -114,12 +116,12 @@ const WindAndTempGraph: React.FC<WindAndTempGraphProps> = ({ data }) => {
                             <Cell key={`cell-${index}`} fill={getBarColor(entry.cloudCover, entry.rain)} />
                         ))}
                     </Bar>
-                    <Line 
-                        yAxisId="left" 
-                        type="monotone" 
-                        dataKey="temperature" 
-                        stroke="#ff7300" 
-                        strokeWidth={2} 
+                    <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="temperature"
+                        stroke="#ff7300"
+                        strokeWidth={2}
                         dot={<CustomizedDot />}
                         activeDot={{ r: 8 }}
                         strokeDasharray="none"

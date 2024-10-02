@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import SearchArea from '../molecules/SearchArea/SearchArea';
 import { WeatherYahoo } from '../organisms/WeatherYahoo/WeatherYahoo';
-import TideInfoContainer from '../../features/forecast/tide/TideInfoContainer'; 
+import TideInfoContainer from '../../features/forecast/tide/TideInfoContainer';
 import { WindAndTemp } from '../organisms/WindAndTemp/WindAndTemp';
 import LocationInfo from '../organisms/LocationInfo/LocationInfo';
+import PortImg from '../organisms/PortImg/PortImg'; // 追加
 
 interface ForecastProps {
     prefectureOptions: { label: string; furigana: string; prefectureCode: string; }[];
@@ -15,7 +16,7 @@ interface ForecastProps {
     showPortBox: boolean;
     onSearch: (query: string) => void;
     locationData: { Name: string; Latitude: string; Longitude: string; BoundingBox: string } | null;
-    tideInfoQuery: string; // 新しく追加
+    tideInfoQuery: string;
 }
 
 export const Forecast: React.FC<ForecastProps> = ({
@@ -27,7 +28,7 @@ export const Forecast: React.FC<ForecastProps> = ({
     showPortBox,
     onSearch,
     locationData,
-    tideInfoQuery, // 新しく追加
+    tideInfoQuery,
 }) => {
     return (
         <ForecastWrapper>
@@ -46,7 +47,7 @@ export const Forecast: React.FC<ForecastProps> = ({
                         <LocationInfo locationData={locationData} />
                     </LocationInfoArea>
                     <TideInfoArea>
-                        <TideInfoContainer query={tideInfoQuery} /> {/* TideInfoContainerに変更 */}
+                        <TideInfoContainer query={tideInfoQuery} />
                     </TideInfoArea>
                     <RainFallOneHourWidget>
                         <WeatherYahoo locationData={locationData} />
@@ -54,12 +55,14 @@ export const Forecast: React.FC<ForecastProps> = ({
                     <WindAndTempArea>
                         <WindAndTemp locationData={locationData} />
                     </WindAndTempArea>
+                    <PortImgArea> {/* 新しく追加 */}
+                        <PortImg locationData={locationData} />
+                    </PortImgArea>
                 </GridContainer>
             </MainForecastArea>
         </ForecastWrapper>
     );
 };
-
 
 const ForecastWrapper = styled.div`
     width: 95%;
@@ -75,13 +78,12 @@ const MainForecastArea = styled.div`
     padding: 20px;
     background-color: rgba(33, 14, 14, 0.3);
     border-radius: 10px;
-    border: 1px solid white;
 `;
 
 const GridContainer = styled.div`
     display: grid;
     grid-template-columns: 2fr 3fr;
-    grid-template-rows: 2fr 3fr 6fr;
+    grid-template-rows: auto auto auto auto; /* 各エリアの高さを自動調整 */
     gap: 12.5px;
     height: 100%;
 `;
@@ -90,10 +92,12 @@ const LocationInfoArea = styled.div`
     border-radius: 10px;
     grid-column: 1 / span 1; 
     grid-row: 1 / span 1; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.2);
 `;
 
 const TideInfoArea = styled.div`
-    background: rgba( 17, 21, 56, 0.15 );
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.2);
+    background: rgba( 17, 21, 56, 0.41 );
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
     backdrop-filter: blur( 2px );
     -webkit-backdrop-filter: blur( 2px );
@@ -105,7 +109,8 @@ const TideInfoArea = styled.div`
 `;
 
 const RainFallOneHourWidget = styled.div`
-    background: rgba( 17, 21, 56, 0.15 );
+    background: rgba( 17, 21, 56, 0.41 );
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.2);
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
     backdrop-filter: blur( 2px );
     -webkit-backdrop-filter: blur( 2px );
@@ -117,7 +122,7 @@ const RainFallOneHourWidget = styled.div`
 `;
 
 const WindAndTempArea = styled.div`
-    background: rgba( 17, 21, 56, 0.15 );
+    background: rgba( 17, 21, 56, 0.41 );
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
     backdrop-filter: blur( 2px );
     -webkit-backdrop-filter: blur( 2px );
@@ -125,8 +130,23 @@ const WindAndTempArea = styled.div`
     border: 1px solid rgba( 255, 255, 255, 0.18 );
     padding: 10px;
     grid-column: 1 / span 2; 
-    grid-row: 3 / span 2; 
-    min-height: 480px;
+    grid-row: 3 / span 1; 
+    min-height: ${({ isGraphLoaded }) => (isGraphLoaded ? '480px' : 'auto')}; /* グラフの高さに応じて調整 */
+    height: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.2);
+`;
+
+const PortImgArea = styled.div`
+    background: rgba( 17, 21, 56, 0.41 );
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 2px );
+    -webkit-backdrop-filter: blur( 2px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    padding: 10px;
+    grid-column: 1 / span 2; 
+    grid-row: 4; /* WindAndTempの下に配置 */
 `;
 
 export default Forecast;

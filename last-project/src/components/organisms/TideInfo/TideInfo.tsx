@@ -107,7 +107,9 @@ const TideInfo: React.FC<TideInfoProps> = ({ tideInfo, relevantPorts, loading, e
         <TideInfoWrapper>
             <Title>{query}港の本日の潮汐グラフ</Title>
             <SubTitle>潮汐種別：{tideInfo.tideType}</SubTitle> {/* 潮汐種別を表示 */}
-            <TideGraph data={tideInfo.tide} sun={tideInfo.sun} />
+            <TideGraphWrapper>
+                <TideGraph data={tideInfo.tide} sun={tideInfo.sun} />
+            </TideGraphWrapper>
         </TideInfoWrapper>
     );
 };
@@ -119,6 +121,12 @@ const TideInfoWrapper = styled.div`
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    overflow-y: auto; /* 縦方向のスクロールを許可 */
+`;
+
+const TideGraphWrapper = styled.div`
+    flex-grow: 1;
+    overflow-y: auto; /* グラフ部分のみ縦方向のスクロールを許可 */
 `;
 
 const Title = styled.h1`
@@ -268,3 +276,4 @@ const Toast = styled.div`
 `;
 
 export default TideInfo;
+

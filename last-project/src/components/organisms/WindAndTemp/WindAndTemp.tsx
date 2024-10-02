@@ -16,7 +16,7 @@ export const WindAndTemp: React.FC<WindAndTempProps> = ({ locationData }) => {
     const { windAndTempData, error, isLoading } = useWindAndTemp(locationData?.Latitude || null, locationData?.Longitude || null);
 
     return (
-        <WindAndTempWrapper>
+        <WindAndTempWrapper isGraphLoaded={Boolean(windAndTempData)}>
             <Title>1時間ごとの気象予報</Title>
             {locationData ? (
                 <div>
@@ -40,9 +40,10 @@ export const WindAndTemp: React.FC<WindAndTempProps> = ({ locationData }) => {
     );
 };
 
-const WindAndTempWrapper = styled.div`
+const WindAndTempWrapper = styled.div<{ isGraphLoaded: boolean }>`
   color: white;
   height: 100%;
+  min-height: ${({ isGraphLoaded }) => (isGraphLoaded ? '480px' : 'auto')}; /* グラフがロードされるまでの高さ調整 */
 `;
 
 const Title = styled.h1`

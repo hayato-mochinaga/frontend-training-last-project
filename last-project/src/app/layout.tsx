@@ -21,7 +21,7 @@ const deepSeaAppearance = keyframes`
     filter: blur(5px);
   }
   100% {
-    opacity: 1;
+    opacity: 0.9;
     transform: translateY(0) scale(1);
     filter: blur(0);
   }
@@ -48,25 +48,30 @@ const ContentContainer = styled.div<{ animate: boolean }>`
 const VerticalMenuContainer = styled.div<{ animate: boolean }>`
     opacity: 0; // 初期状態で非表示
     animation: ${({ animate }) => animate ? slowFadeIn : 'none'} 2s ease-in forwards; // アニメーション条件を指定
+
+    // 画面幅が1030px未満の時に非表示にする
+    @media (max-width: 1030px) {
+        display: none;
+    }
 `;
 
 const Layout: React.FC = () => {
-    const [animate, setAnimate] = useState(false);
+  const [animate, setAnimate] = useState(false);
 
-    useEffect(() => {
-        setAnimate(true);
-    }, []);
+  useEffect(() => {
+    setAnimate(true);
+  }, []);
 
-    return (
-        <LayoutContainer>
-            <VerticalMenuContainer animate={animate}>
-                <VerticalMenu />
-            </VerticalMenuContainer>
-            <ContentContainer animate={animate}>
-                <Outlet />
-            </ContentContainer>
-        </LayoutContainer>
-    );
+  return (
+    <LayoutContainer>
+      <VerticalMenuContainer animate={animate}>
+        <VerticalMenu />
+      </VerticalMenuContainer>
+      <ContentContainer animate={animate}>
+        <Outlet />
+      </ContentContainer>
+    </LayoutContainer>
+  );
 };
 
 export default Layout;

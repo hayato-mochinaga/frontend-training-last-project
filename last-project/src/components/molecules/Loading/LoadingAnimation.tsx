@@ -45,7 +45,7 @@ const LoaderSpan = styled.span<{ i: number }>`
   left: 0;
   width: 100%;
   height: 100%;
-  transform: rotate(calc(-1900deg * ${({ i }) => i}));  // 回転方向を元に戻す
+  transform: rotate(calc(3045deg * ${({ i }) => i}));  // 回転方向を元に戻す
   transform-origin: center center;
 
   &::before {
@@ -53,9 +53,9 @@ const LoaderSpan = styled.span<{ i: number }>`
     position: absolute;
     top: 0;
     left: 0;
-    width: 12%;  // Loaderのサイズに対して相対的な大きさを指定
+    width: 7%;  // Loaderのサイズに対して相対的な大きさを指定
     height: 29%; // Loaderのサイズに対して相対的な大きさを指定
-    border-radius: 50%;
+    border-radius: 5%;
     background-color: #00ff0a;
     box-shadow: 0 0 1px #00ff0a,
                 0 0 2px #00ff0a,
